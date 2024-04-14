@@ -1,0 +1,22 @@
+meta {
+  name: Create user
+  type: http
+  seq: 1
+}
+
+post {
+  url: http://localhost:8082/api/v1/auth/register
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "username": "vira2",
+    "password": "viravira",
+    "email": "vira2@vira.com",
+    "firstName": "vira",
+    "lastName": "vira",
+    "phone": "690334576"
+  }
+}

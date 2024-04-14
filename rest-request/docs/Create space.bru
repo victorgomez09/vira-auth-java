@@ -1,0 +1,25 @@
+meta {
+  name: Create space
+  type: http
+  seq: 1
+}
+
+post {
+  url: http://localhost:8082/api/v1/doc/space
+  body: json
+  auth: bearer
+}
+
+headers {
+  X-UserId: 2
+}
+
+auth:bearer {
+  token: eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ2aXJhMiIsInJvbGVzIjpbIlVTRVIiXSwiZXhwIjoxNzEyNzU3Nzc4LCJ1c2VySWQiOjJ9.vbH6SQLT9kaNQVmwfQiYX8kFzNE1FrvO3fVchgbISzo
+}
+
+body:json {
+  {
+    
+  }
+}

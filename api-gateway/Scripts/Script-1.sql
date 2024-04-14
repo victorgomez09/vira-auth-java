@@ -1,0 +1,1 @@
+drop database vira_docs;
