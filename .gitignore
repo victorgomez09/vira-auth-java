@@ -38,3 +38,4 @@ build/
 .DS_Store
 
 **/.dbeaver
+**/pnpm-lock.yaml

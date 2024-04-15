@@ -1,0 +1,53 @@
+.MuiStack-root {
+    @apply bg-base-300 text-base-content rounded-btn !important;
+}
+
+.MuiBox-root {
+    @apply bg-base-300 text-base-content !important;
+}
+
+.MuiButtonBase-root {
+    @apply text-base-content !important;
+}
+
+.Mui-selected {
+    @apply bg-primary !important;
+}
+
+.MuiPaper-root {
+    @apply bg-base-300 text-base-content rounded-btn !important;
+}
+
+.MuiList-root {
+    @apply bg-base-300 text-base-content rounded-btn !important;
+}
+
+.MuiListItemIcon-root {
+    @apply bg-base-300 text-base-content rounded-btn !important;
+}
+
+.MuiTypography-root {
+    @apply bg-base-300 text-base-content rounded-btn !important;
+}
+
+/** BLOCKS **/
+.remirror-editor div[data-callout-type='error'] {
+    @apply bg-error/25 border-l-error !important;
+}
+
+.remirror-editor div[data-callout-type='info'] {
+    @apply bg-info/25 border-l-info !important;
+}
+
+.remirror-editor div[data-callout-type='warning'] {
+    @apply bg-warning/25 border-l-warning !important;
+}
+
+.remirror-editor div[data-callout-type='success'] {
+    @apply bg-success/25 border-l-success !important;
+}
+
+/** BLOCK QUOTE **/
+blockquote {
+    @apply bg-base-content/20 text-base-content p-2 !important;
+}
