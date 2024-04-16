@@ -1,3 +1,5 @@
+import './editor.component.css'
+
 import { FileExtension } from "@remirror/extension-file";
 import { TableExtension } from "@remirror/extension-react-tables";
 import {

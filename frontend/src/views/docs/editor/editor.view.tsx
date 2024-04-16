@@ -1,5 +1,4 @@
-import "./editor.view.css";
-import { ViraEditor } from "../../../components/editor.component";
+import { ViraEditor } from "../../../components/editor/editor.component";
 
 export default function EditorView() {
   return (
