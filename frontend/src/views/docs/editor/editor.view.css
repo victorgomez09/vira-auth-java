@@ -1,13 +1,13 @@
 .MuiStack-root {
-    @apply bg-base-300 text-base-content rounded-btn !important;
+    @apply text-base-content rounded-btn flex-wrap !important;
 }
 
 .MuiBox-root {
-    @apply bg-base-300 text-base-content !important;
+    @apply text-base-content !important;
 }
 
 .MuiButtonBase-root {
-    @apply text-base-content !important;
+    @apply text-base-content mr-2 !important;
 }
 
 .Mui-selected {
@@ -15,19 +15,23 @@
 }
 
 .MuiPaper-root {
-    @apply bg-base-300 text-base-content rounded-btn !important;
+    @apply text-base-content rounded-btn !important;
 }
 
 .MuiList-root {
-    @apply bg-base-300 text-base-content rounded-btn !important;
+    @apply text-base-content rounded-btn !important;
 }
 
 .MuiListItemIcon-root {
-    @apply bg-base-300 text-base-content rounded-btn !important;
+    @apply text-base-content rounded-btn !important;
 }
 
 .MuiTypography-root {
-    @apply bg-base-300 text-base-content rounded-btn !important;
+    @apply text-base-content rounded-btn !important;
+}
+
+.MuiPaper-root {
+    @apply shadow p-2 !important;
 }
 
 /** BLOCKS **/

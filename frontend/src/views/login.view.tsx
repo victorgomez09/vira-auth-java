@@ -1,4 +1,14 @@
+import { useForm, SubmitHandler } from "react-hook-form";
+import { Login } from "../models/auth.model";
+
 export default function LoginView() {
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<Login>({ mode: "onTouched" })
+  const onSubmit: SubmitHandler<Login> = (data) => console.log(data)
+
   return (
     <div className="hero min-h-screen bg-base-200">
       <div className="hero-content flex-col lg:flex-row-reverse">
@@ -11,7 +21,7 @@ export default function LoginView() {
           </p>
         </div>
         <div className="card shrink-0 w-full max-w-sm shadow-2xl bg-base-100">
-          <form className="card-body">
+          <form className="card-body" onSubmit={handleSubmit(onSubmit)}>
             <div className="form-control">
               <label className="label">
                 <span className="label-text">Email</span>
@@ -20,8 +30,13 @@ export default function LoginView() {
                 type="email"
                 placeholder="email"
                 className="input input-bordered"
-                required
+                {...register("email")}
               />
+              {errors.email && (
+                <label className="label">
+                  <span className="label-text-alt text-error">This field is required</span>
+                </label>
+              )}
             </div>
             <div className="form-control">
               <label className="label">
@@ -31,8 +46,13 @@ export default function LoginView() {
                 type="password"
                 placeholder="password"
                 className="input input-bordered"
-                required
+                {...register("password")}
               />
+              {errors.password && (
+                <label className="label">
+                  <span className="label-text-alt text-error">This field is required</span>
+                </label>
+              )}
               <label className="label">
                 <a href="#" className="label-text-alt link link-hover">
                   Forgot password?

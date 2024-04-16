@@ -1377,8 +1377,6 @@ packages:
     peerDependenciesMeta:
       '@types/prettier':
         optional: true
-      '@types/refractor':
-        optional: true
       prettier:
         optional: true
     dependencies:
