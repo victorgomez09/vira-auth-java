@@ -20,11 +20,13 @@ import com.virasoftware.common.dto.EmailVerificationDto;
 
 @Configuration
 public class KafkaProducerConfig {
+	
+	private final String BOOTSTRAP_SERVERS_CONFIG_URL = "vira-kafka:9092";
 
     @Bean
     ProducerFactory<String, UserDto> userProducerFactory() {
         Map<String, Object> props = new HashMap<>();
-        props.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, "localhost:9092");
+        props.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, BOOTSTRAP_SERVERS_CONFIG_URL);
         props.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
         props.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, UserDtoSerializer.class);
         return new DefaultKafkaProducerFactory<>(props);
@@ -38,7 +40,7 @@ public class KafkaProducerConfig {
     @Bean
     ProducerFactory<String, EmailVerificationDto> emailVerificationProducerFactory() {
         Map<String, Object> props = new HashMap<>();
-        props.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, "localhost:9092");
+        props.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, BOOTSTRAP_SERVERS_CONFIG_URL);
         props.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
         props.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, EmailVerificationDtoSerializer.class);
         return new DefaultKafkaProducerFactory<>(props);
@@ -52,7 +54,7 @@ public class KafkaProducerConfig {
     @Bean
     ProducerFactory<String, EmailUpdateDto> emailUpdateProducerFactory() {
         Map<String, Object> props = new HashMap<>();
-        props.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, "localhost:9092");
+        props.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, BOOTSTRAP_SERVERS_CONFIG_URL);
         props.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
         props.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, EmailUpdateDtoSerializer.class);
         return new DefaultKafkaProducerFactory<>(props);

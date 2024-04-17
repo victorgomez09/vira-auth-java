@@ -1,24 +1,29 @@
-version: '3'
+version: '3.9'
 
 services:
   zookeeper:
+    container_name: vira-zookeeper
     image: zookeeper:3.6.3
     ports:
       - "2181:2181"
 
   kafka:
+    container_name: vira-kafka
     image: bitnami/kafka:3.6.0
     ports:
       - "9092:9092"
     environment:
-      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://localhost:9092
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092
       KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT
       KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
       KAFKA_CFG_ZOOKEEPER_CONNECT: zookeeper:2181
     depends_on:
       - zookeeper
+    networks:
+      - kafka
 
   postgres_auth:
+    container_name: vira-postgres-auth
     image: postgres:14-alpine
     ports:
       - 5432:5432
@@ -28,7 +33,9 @@ services:
       - POSTGRES_PASSWORD=postgres
       - POSTGRES_USER=postgres
       - POSTGRES_DB=vira_auth
-  
+    networks:
+      - postgres
+
   postgres_docs:
     image: postgres:14-alpine
     ports:
@@ -39,6 +46,8 @@ services:
       - POSTGRES_PASSWORD=postgres
       - POSTGRES_USER=postgres
       - POSTGRES_DB=vira_docs
+    networks:
+      - postgres
 
   postgres_users:
     image: postgres:14-alpine
@@ -50,8 +59,101 @@ services:
       - POSTGRES_PASSWORD=postgres
       - POSTGRES_USER=postgres
       - POSTGRES_DB=vira_users
+    networks:
+      - postgres
 
   config-server:
+    container_name: vira-config-server
     build: config-server/
     ports:
-      -8888:8888
+      - 8888:8888
+    networks:
+      - spring
+    healthcheck:
+      test: curl --fail http://vira-config-server:8888/eureka-server.properties || exit 1
+      interval: 3s
+      timeout: 5s
+      retries: 5
+
+  eureka-server:
+    container_name: vira-eureka-server
+    build: eureka-server/
+    ports:
+      - 8081:8081
+    depends_on:
+      config-server:
+        condition: service_healthy
+    networks:
+      - spring
+    healthcheck:
+      test: curl --fail http://vira-config-server:8888/eureka-server.properties || exit 1
+      interval: 3s
+      timeout: 5s
+      retries: 5
+
+  gateway-server:
+    container_name: vira-gateway-server
+    build: api-gateway/
+    ports:
+      - 8082:8082
+    depends_on:
+      eureka-server:
+        condition: service_healthy
+    networks:
+      - spring
+    healthcheck:
+      test: curl --fail http://vira-eureka-server:8081/ || exit 1
+      interval: 3s
+      timeout: 5s
+      retries: 5
+
+  auth-server:
+    container_name: vira-auth-server
+    build: auth-service/
+    depends_on:
+      eureka-server:
+        condition: service_healthy
+    networks:
+      - spring
+      - postgres
+      - kafka
+    healthcheck:
+      test: curl --fail http://vira-eureka-server:8081/ || exit 1
+      interval: 3s
+      timeout: 5s
+      retries: 5
+
+  user-server:
+    container_name: vira-user-server
+    build: user-service/
+    depends_on:
+      eureka-server:
+        condition: service_healthy
+    networks:
+      - spring
+      - postgres
+      - kafka
+    healthcheck:
+      test: curl --fail http://vira-eureka-server:8081/ || exit 1
+      interval: 3s
+      timeout: 5s
+      retries: 5
+
+  doc-server:
+    container_name: vira-docs-server
+    build: docs-service/
+    networks:
+      - spring
+      - kafka
+      - postgres
+    depends_on:
+      eureka-server:
+        condition: service_healthy
+
+networks:
+  kafka:
+    driver: bridge
+  postgres:
+    driver: bridge
+  spring:
+    driver: bridge
