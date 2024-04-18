@@ -1,13 +1,29 @@
 import { useForm, SubmitHandler } from "react-hook-form";
-import { Login } from "../models/auth.model";
+import { Login, Token } from "../models/auth.model";
+import { CONTANTS } from "../utils/constants.util";
+import { useNavigate } from "react-router-dom";
 
 export default function LoginView() {
+  const navigate = useNavigate();
   const {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<Login>({ mode: "onTouched" })
-  const onSubmit: SubmitHandler<Login> = (data) => console.log(data)
+  } = useForm<Login>({ mode: "onTouched" });
+
+  const onSubmit: SubmitHandler<Login> = async (data) => {
+    const result = await fetch(`${CONTANTS.apiUrl}/auth/login`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(data),
+    });
+
+    const token = (await result.json()) as Token;
+    localStorage.setItem("access_token", token.accessToken);
+    navigate("/docs");
+  };
 
   return (
     <div className="hero min-h-screen bg-base-200">
@@ -24,17 +40,19 @@ export default function LoginView() {
           <form className="card-body" onSubmit={handleSubmit(onSubmit)}>
             <div className="form-control">
               <label className="label">
-                <span className="label-text">Email</span>
+                <span className="label-text">Username</span>
               </label>
               <input
-                type="email"
-                placeholder="email"
-                className="input input-bordered"
-                {...register("email")}
+                type="text"
+                placeholder="username"
+                className={`input input-bordered ${errors.username ? "input-error" : ""}`}
+                {...register("username")}
               />
-              {errors.email && (
+              {errors.username && (
                 <label className="label">
-                  <span className="label-text-alt text-error">This field is required</span>
+                  <span className="label-text-alt text-error">
+                    This field is required
+                  </span>
                 </label>
               )}
             </div>
@@ -45,12 +63,14 @@ export default function LoginView() {
               <input
                 type="password"
                 placeholder="password"
-                className="input input-bordered"
+                className={`input input-bordered ${errors.password ? "input-error" : ""}`}
                 {...register("password")}
               />
               {errors.password && (
                 <label className="label">
-                  <span className="label-text-alt text-error">This field is required</span>
+                  <span className="label-text-alt text-error">
+                    This field is required
+                  </span>
                 </label>
               )}
               <label className="label">

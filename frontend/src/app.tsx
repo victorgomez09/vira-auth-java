@@ -3,6 +3,7 @@ import LoginView from "./views/login.view";
 import RegisterView from "./views/register.view";
 import DocsLayout from "./components/layouts/docs.layout";
 import DocsView from "./views/docs/docs.view";
+import { PrivateRoute } from "./router/private.route";
 
 function App() {
   return (
@@ -10,7 +11,7 @@ function App() {
       <Routes>
         <Route path="/register" element={<RegisterView />} />
         <Route path="/login" element={<LoginView />} />
-        <Route path="/docs" element={<DocsLayout />}>
+        <Route path="/docs" element={<PrivateRoute />}>
           <Route path="" element={<DocsView />} />
         </Route>
       </Routes>
