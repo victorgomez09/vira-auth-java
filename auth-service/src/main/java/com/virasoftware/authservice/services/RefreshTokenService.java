@@ -11,7 +11,7 @@ import org.springframework.stereotype.Service;
 import com.virasoftware.authservice.domains.dtos.RefreshRequestDto;
 import com.virasoftware.authservice.domains.dtos.RefreshResponseDto;
 import com.virasoftware.authservice.domains.entities.RefreshToken;
-import com.virasoftware.authservice.domains.entities.User;
+import com.virasoftware.authservice.domains.entities.AuthUser;
 import com.virasoftware.authservice.jwt.JwtUtils;
 import com.virasoftware.authservice.repository.RefreshTokenRepository;
 import com.virasoftware.common.exception.NotFoundException;
@@ -22,14 +22,14 @@ import lombok.RequiredArgsConstructor;
 @Service
 @RequiredArgsConstructor
 public class RefreshTokenService {
-	
+
     private final RefreshTokenRepository refreshTokenRepository;
     private final JwtUtils jwtUtils;
-    
+
     @Value("${jwt.refreshToken.expiration}")
     private Duration refreshTokenLifeTime;
 
-    public RefreshResponseDto createRefreshToken(User user) {
+    public RefreshResponseDto createRefreshToken(AuthUser user) {
         if (user.getRefreshToken() != null) {
             refreshTokenRepository.delete(user.getRefreshToken());
             user.setRefreshToken(null);
@@ -39,9 +39,10 @@ public class RefreshTokenService {
         var refreshToken = refreshTokenRepository.save(RefreshToken.builder()
                 .user(user)
                 .token(UUID.randomUUID().toString())
-                .expiration(ZonedDateTime.now(ZoneId.systemDefault()).plusMinutes(refreshTokenLifeTime.toMinutes()).toInstant())
+                .expiration(ZonedDateTime.now(ZoneId.systemDefault()).plusMinutes(refreshTokenLifeTime.toMinutes())
+                        .toInstant())
                 .build());
-        
+
         return RefreshResponseDto.builder()
                 .accessToken(accessToken.getToken())
                 .accessTokenExpiration(accessToken.getExpiration())
@@ -52,14 +53,15 @@ public class RefreshTokenService {
 
     public RefreshResponseDto refreshToken(RefreshRequestDto refreshRequestDto) {
         RefreshToken refreshToken = refreshTokenRepository.findByToken(refreshRequestDto.getRefreshToken())
-                .orElseThrow(() -> new NotFoundException("Refresh token not found: " + refreshRequestDto.getRefreshToken()));
+                .orElseThrow(
+                        () -> new NotFoundException("Refresh token not found: " + refreshRequestDto.getRefreshToken()));
         if (refreshToken.isExpired()) {
             refreshTokenRepository.delete(refreshToken);
             throw new UnauthorizedException("Refresh token is expired: " + refreshRequestDto.getRefreshToken());
         }
         var accessToken = jwtUtils.createAccessToken(refreshToken.getUser());
         updateToken(refreshToken);
-        
+
         return RefreshResponseDto.builder()
                 .accessToken(accessToken.getToken())
                 .accessTokenExpiration(accessToken.getExpiration())
@@ -69,7 +71,8 @@ public class RefreshTokenService {
     }
 
     private void updateToken(RefreshToken refreshToken) {
-        refreshToken.setExpiration(ZonedDateTime.now(ZoneId.systemDefault()).plusMinutes(refreshTokenLifeTime.toMinutes()).toInstant());
+        refreshToken.setExpiration(
+                ZonedDateTime.now(ZoneId.systemDefault()).plusMinutes(refreshTokenLifeTime.toMinutes()).toInstant());
         refreshTokenRepository.save(refreshToken);
     }
 

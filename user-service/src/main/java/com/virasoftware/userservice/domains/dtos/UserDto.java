@@ -1,11 +1,11 @@
 package com.virasoftware.userservice.domains.dtos;
 
+import java.util.List;
 import java.util.Set;
 
 import org.springframework.beans.BeanUtils;
 
 import com.virasoftware.common.dto.Dto;
-import com.virasoftware.common.enums.Role;
 import com.virasoftware.userservice.domains.entities.User;
 
 import lombok.AllArgsConstructor;
@@ -19,7 +19,8 @@ public class UserDto implements Dto<User> {
     private Long id;
     private String username;
     private String email;
-    private Set<Role> roles;
+    private String password;
+    private List<String> roles;
     private String firstName;
     private String lastName;
     private String phone;

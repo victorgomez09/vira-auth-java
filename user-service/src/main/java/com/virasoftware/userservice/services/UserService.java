@@ -1,5 +1,6 @@
 package com.virasoftware.userservice.services;
 
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.virasoftware.userservice.domains.dtos.EmailUpdateDto;
@@ -15,24 +16,34 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class UserService {
     private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
 
     public UserDto getUserById(Long userId) {
         User user = findById(userId);
-        
+
         return new UserDto().fromEntity(user);
     }
 
-    public void createNewUser(UserDto user) {
-        userRepository.save(user.toEntity());
+    public UserDto getUserByUsername(String username) {
+        return new UserDto().fromEntity(userRepository.findByUsername(username)
+                .orElseThrow(() -> new UserNotFoundException("User not found with Username: " + username)));
+    }
+
+    public void createNewUser(UserDto requestData) {
+        User user = requestData.toEntity();
+        user.setPassword(passwordEncoder.encode(requestData.getPassword()));
+
+        userRepository.save(user);
     }
 
     public UserDto updateUserById(Long userId, UpdateUserDto dto) {
         User user = findById(userId);
-        user.setFirstName(dto.getFirstName()); // id, username - cannot change; email - by patch with verification; roles - by user with authorities
+        user.setFirstName(dto.getFirstName()); // id, username - cannot change; email - by patch with verification;
+                                               // roles - by user with authorities
         user.setLastName(dto.getLastName());
         user.setPhone(dto.getPhone());
         User savedUser = userRepository.save(user);
-        
+
         return new UserDto().fromEntity(savedUser);
     }
 
@@ -53,12 +64,13 @@ public class UserService {
             user.setPhone(user.getPhone());
         }
         User savedUser = userRepository.save(user);
-        
+
         return new UserDto().fromEntity(savedUser);
     }
 
     public User findById(Long id) {
-        return userRepository.findById(id).orElseThrow(() -> new UserNotFoundException("User not found with UserID: " + id));
+        return userRepository.findById(id)
+                .orElseThrow(() -> new UserNotFoundException("User not found with UserID: " + id));
     }
 
     public void updateEmail(EmailUpdateDto emailUpdateDto) {
@@ -67,4 +79,3 @@ public class UserService {
         userRepository.save(user);
     }
 }
-

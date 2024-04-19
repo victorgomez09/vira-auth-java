@@ -27,7 +27,8 @@ import lombok.Setter;
 @Setter
 @Builder
 public class RefreshToken {
-    @Id @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "ref_token_id_seq")
+    @Id
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "ref_token_id_seq")
     @SequenceGenerator(name = "ref_token_id_seq", sequenceName = "ref_token_id_seq", allocationSize = 1)
     private Long id;
     @Column(nullable = false)
@@ -36,7 +37,7 @@ public class RefreshToken {
     private Instant expiration;
     @OneToOne
     @JoinColumn(name = "user_id", nullable = false)
-    private User user;
+    private AuthUser user;
 
     public boolean isExpired() {
         return this.getExpiration().isBefore(ZonedDateTime.now(ZoneId.systemDefault()).toInstant());

@@ -39,3 +39,4 @@ build/
 
 **/.dbeaver
 **/pnpm-lock.yaml
+node_modules

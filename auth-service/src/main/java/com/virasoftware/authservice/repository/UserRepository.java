@@ -5,12 +5,15 @@ import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-import com.virasoftware.authservice.domains.entities.User;
+import com.virasoftware.authservice.domains.entities.AuthUser;
 
 @Repository
-public interface UserRepository extends JpaRepository<User, Long> {
+public interface UserRepository extends JpaRepository<AuthUser, Long> {
     boolean existsByUsernameOrEmail(String username, String email);
+
     boolean existsByEmail(String email);
-    Optional<User> findByUsername(String username);
-    Optional<User> findByActivationCode(String activationCode);
+
+    Optional<AuthUser> findByUsername(String username);
+
+    Optional<AuthUser> findByActivationCode(String activationCode);
 }

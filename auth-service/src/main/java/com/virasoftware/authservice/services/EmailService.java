@@ -2,13 +2,17 @@ package com.virasoftware.authservice.services;
 
 import java.util.UUID;
 
+import org.springframework.http.HttpStatusCode;
+import org.springframework.http.ResponseEntity;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.virasoftware.authservice.domains.dtos.EmailDto;
 import com.virasoftware.authservice.domains.dtos.EmailUpdateDto;
-import com.virasoftware.authservice.domains.entities.User;
+import com.virasoftware.authservice.domains.dtos.UserDto;
+import com.virasoftware.authservice.domains.entities.AuthUser;
+import com.virasoftware.authservice.feign.UserFeignClient;
 import com.virasoftware.authservice.repository.UserRepository;
 import com.virasoftware.common.dto.EmailVerificationDto;
 import com.virasoftware.common.exception.ConflictException;
@@ -20,7 +24,8 @@ import lombok.RequiredArgsConstructor;
 @Service
 @RequiredArgsConstructor
 public class EmailService {
-	
+
+    private final UserFeignClient userFeignClient;
     private final UserRepository userRepository;
     private final KafkaTemplate<String, EmailVerificationDto> emailVerificationKafkaTemplate;
     private final KafkaTemplate<String, EmailUpdateDto> emailUpdateKafkaTemplate;
@@ -32,14 +37,23 @@ public class EmailService {
 
     @Transactional
     public void updateEmail(Long userId, EmailDto requestDto) {
-        if (userRepository.existsByEmail(requestDto.getEmail())) {
+        ResponseEntity<UserDto> response = userFeignClient.findByEmail(requestDto.getEmail());
+        if (response.getStatusCode() == HttpStatusCode.valueOf(200)) {
             throw new ConflictException("User with email already exists!");
         }
-        User user = userRepository.findById(userId).orElseThrow(() -> new UnauthorizedException("User not found with UserID: " + userId));
+
+        response = userFeignClient.findById(userId);
+        if (response.getStatusCode() == HttpStatusCode.valueOf(200)) {
+            throw new NotFoundException("User not exists!");
+        }
+        UserDto user = response.getBody();
         user.setEmail(requestDto.getEmail());
+
+        AuthUser authUser = userRepository.findById(userId)
+                .orElseThrow(() -> new NotFoundException("User not exists!"));
         String activationCode = UUID.randomUUID().toString();
-        user.setActivationCode(activationCode);
-        userRepository.save(user);
+        authUser.setActivationCode(activationCode);
+        userRepository.save(authUser);
 
         sendActivationCode(user.getUsername(), user.getEmail(), activationCode);
 
@@ -48,7 +62,8 @@ public class EmailService {
     }
 
     public void verifyEmail(String activationCode) {
-        User user = userRepository.findByActivationCode(activationCode).orElseThrow(() -> new NotFoundException("Activation code not found or already used!"));
+        AuthUser user = userRepository.findByActivationCode(activationCode)
+                .orElseThrow(() -> new NotFoundException("Activation code not found or already used!"));
         user.setActivationCode(null);
         userRepository.save(user);
     }

@@ -39,7 +39,15 @@ public class UserController {
     @GetMapping("/{userId}")
     public ResponseEntity<UserDto> getUserById(@PathVariable Long userId) {
         UserDto responseDto = userService.getUserById(userId);
-        
+
+        return ResponseEntity.ok(responseDto);
+    }
+
+    @Operation(summary = "Get User by username", description = "Get User by username")
+    @GetMapping("/username/{userId}")
+    public ResponseEntity<UserDto> getUserByUsername(@PathVariable String username) {
+        UserDto responseDto = userService.getUserByUsername(username);
+
         return ResponseEntity.ok(responseDto);
     }
 
@@ -49,10 +57,9 @@ public class UserController {
     public ResponseEntity<UserDto> updateUserById(
             @PathVariable Long userId,
             @RequestBody @Valid UpdateUserDto requestDto,
-            BindingResult result
-    ) {
+            BindingResult result) {
         UserDto responseDto = userService.updateUserById(userId, requestDto);
-        
+
         return ResponseEntity.ok(responseDto);
     }
 
@@ -60,7 +67,7 @@ public class UserController {
     @GetMapping
     public ResponseEntity<UserDto> getCurrentUser(@Parameter(hidden = true) @RequestHeader("X-User-Id") Long userId) {
         UserDto responseDto = userService.getUserById(userId);
-        
+
         return ResponseEntity.ok(responseDto);
     }
 
@@ -70,10 +77,9 @@ public class UserController {
     public ResponseEntity<UserDto> updateCurrentUser(
             @Parameter(hidden = true) @RequestHeader("X-User-Id") Long userId,
             @RequestBody @Valid UpdateUserDto requestDto,
-            BindingResult result
-    ) {
+            BindingResult result) {
         UserDto responseDto = userService.updateUserById(userId, requestDto);
-        
+
         return ResponseEntity.ok(responseDto);
     }
 
@@ -81,20 +87,19 @@ public class UserController {
     @PatchMapping
     public ResponseEntity<UserDto> patchCurrentUser(
             @Parameter(hidden = true) @RequestHeader("X-User-Id") Long userId,
-            @RequestBody UpdateUserDto requestDto
-    ) {
+            @RequestBody UpdateUserDto requestDto) {
         UserDto responseDtp = userService.patchUserById(userId, requestDto);
-        
+
         return ResponseEntity.ok(responseDtp);
     }
 
     @Operation(summary = "Delete Current User", description = "Delete Current User by Authentication")
-    @DeleteMapping //TODO: delete mapping by id only by admin. need to validate is this user is current? i think probably
+    @DeleteMapping // TODO: delete mapping by id only by admin. need to validate is this user is
+                   // current? i think probably
     public ResponseEntity<ResponseMessage> deleteCurrentUser(
-            @Parameter(hidden = true) @RequestHeader("X-User-Id") Long userId
-    ) {
+            @Parameter(hidden = true) @RequestHeader("X-User-Id") Long userId) {
         userService.deleteUserById(userId);
-        
+
         return ResponseEntity.noContent().build();
     }
 
