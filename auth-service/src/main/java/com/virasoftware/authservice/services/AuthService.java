@@ -1,14 +1,11 @@
 package com.virasoftware.authservice.services;
 
-import java.util.Set;
 import java.util.UUID;
 
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
-import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -67,11 +64,22 @@ public class AuthService {
 	}
 
 	public RefreshResponseDto login(LoginRequestDto loginRequestDto) {
-		authenticationManager.authenticate(
-				new UsernamePasswordAuthenticationToken(loginRequestDto.getUsername(), loginRequestDto.getPassword()));
-		AuthUser user = userRepository.findByUsername(loginRequestDto.getUsername()).orElseThrow();
-
-		return refreshTokenService.createRefreshToken(user);
+		try {			
+			authenticationManager.authenticate(
+					new UsernamePasswordAuthenticationToken(loginRequestDto.getUsername(), loginRequestDto.getPassword()));
+			
+			ResponseEntity<UserDto> response = userFeignClient.findByUsername(loginRequestDto.getUsername());
+			if (response.getStatusCode() != HttpStatusCode.valueOf(200)) {
+				throw new Exception("error");
+			}
+			AuthUser user = userRepository.findByUserId(response.getBody().getId()).orElseThrow();
+			
+			return refreshTokenService.createRefreshToken(user);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		return null;
 	}
 
 }

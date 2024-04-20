@@ -13,15 +13,13 @@ import org.springframework.stereotype.Component;
 
 import com.virasoftware.authservice.domains.dtos.UserDto;
 import com.virasoftware.authservice.feign.UserFeignClient;
-import com.virasoftware.authservice.repository.UserRepository;
 
 import lombok.RequiredArgsConstructor;
 
 @Component
 @RequiredArgsConstructor
 public class DefaultUserDetailsService implements UserDetailsService {
-    // TODO: call user microservice
-    private final UserRepository userRepository;
+    // TODO: check call user microservice
     private final UserFeignClient userFeignClient;
 
     @Override

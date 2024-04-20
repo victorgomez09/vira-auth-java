@@ -36,7 +36,7 @@ public class RefreshToken {
     @Column(nullable = false)
     private Instant expiration;
     @OneToOne
-    @JoinColumn(name = "user_id", nullable = false)
+    @JoinColumn(name = "userId", nullable = false)
     private AuthUser user;
 
     public boolean isExpired() {

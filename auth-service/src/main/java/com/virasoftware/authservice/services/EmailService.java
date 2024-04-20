@@ -17,7 +17,6 @@ import com.virasoftware.authservice.repository.UserRepository;
 import com.virasoftware.common.dto.EmailVerificationDto;
 import com.virasoftware.common.exception.ConflictException;
 import com.virasoftware.common.exception.NotFoundException;
-import com.virasoftware.common.exception.UnauthorizedException;
 
 import lombok.RequiredArgsConstructor;
 

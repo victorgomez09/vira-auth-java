@@ -4,7 +4,6 @@ import java.time.Duration;
 import java.time.Instant;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
-import java.util.Arrays;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -43,7 +42,7 @@ public class JwtUtils {
             String token = JWT.create()
                     .withSubject(user.getUsername())
                     .withClaim("userId", user.getId())
-                    .withArrayClaim("roles", Arrays.asList(user.getRoles()))
+                    .withClaim("roles", user.getRoles())
                     .withExpiresAt(expiresAt)
                     .sign(Algorithm.HMAC256(secret));
 

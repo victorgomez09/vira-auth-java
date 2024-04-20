@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import com.virasoftware.authservice.domains.dtos.RegisterDto;
 import com.virasoftware.authservice.domains.dtos.UserDto;
 
-@FeignClient(name = "users-feign-client", path = "user-service")
+@FeignClient(value = "user-service")
 public interface UserFeignClient {
 
     @PostMapping("/create")

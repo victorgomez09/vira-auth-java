@@ -9,11 +9,7 @@ import com.virasoftware.authservice.domains.entities.AuthUser;
 
 @Repository
 public interface UserRepository extends JpaRepository<AuthUser, Long> {
-    boolean existsByUsernameOrEmail(String username, String email);
-
-    boolean existsByEmail(String email);
-
-    Optional<AuthUser> findByUsername(String username);
 
     Optional<AuthUser> findByActivationCode(String activationCode);
+    Optional<AuthUser> findByUserId(Long userId);
 }
