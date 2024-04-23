@@ -1,0 +1,13 @@
+:host {
+    display: flex;
+    height: 100%;
+    width: 100%;
+}
+
+::ng-deep .p-password-input {
+    width: 100%;
+}
+
+::ng-deep .p-button {
+    width: 100%;
+}

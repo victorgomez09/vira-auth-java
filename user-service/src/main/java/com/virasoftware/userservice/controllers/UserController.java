@@ -44,7 +44,7 @@ public class UserController {
     }
 
     @Operation(summary = "Get User by username", description = "Get User by username")
-    @GetMapping("/username/{userId}")
+    @GetMapping("/username/{username}")
     public ResponseEntity<UserDto> getUserByUsername(@PathVariable String username) {
         UserDto responseDto = userService.getUserByUsername(username);
 

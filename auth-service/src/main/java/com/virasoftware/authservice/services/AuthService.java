@@ -65,18 +65,18 @@ public class AuthService {
 
 	public RefreshResponseDto login(LoginRequestDto loginRequestDto) {
 		try {			
-			authenticationManager.authenticate(
-					new UsernamePasswordAuthenticationToken(loginRequestDto.getUsername(), loginRequestDto.getPassword()));
-			
-			ResponseEntity<UserDto> response = userFeignClient.findByUsername(loginRequestDto.getUsername());
+ 			ResponseEntity<UserDto> response = userFeignClient.findByUsername(loginRequestDto.getUsername());
+ 			System.out.println("response: " + response);
 			if (response.getStatusCode() != HttpStatusCode.valueOf(200)) {
 				throw new Exception("error");
 			}
 			AuthUser user = userRepository.findByUserId(response.getBody().getId()).orElseThrow();
+			authenticationManager.authenticate(
+					new UsernamePasswordAuthenticationToken(response.getBody().getUsername(), response.getBody().getPassword()));
 			
 			return refreshTokenService.createRefreshToken(user);
 		} catch (Exception e) {
-			e.printStackTrace();
+//			e.printStackTrace();
 		}
 		
 		return null;

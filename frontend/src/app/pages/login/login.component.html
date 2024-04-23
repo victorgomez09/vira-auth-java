@@ -1,0 +1,32 @@
+<div class="flex flex-1 justify-content-center align-items-center">
+  <p-card
+    header="Login"
+    [style]="{ width: '360px', backgroundColor: 'var(--surface-50)' }"
+  >
+    <div>
+      <div class="flex flex-column gap-2">
+        <label for="username">Username</label>
+        <input pInputText id="username" aria-describedby="username-help" />
+      </div>
+
+      <div class="flex flex-column gap-2 mt-4">
+        <label for="username">Password</label>
+        <p-password
+          [toggleMask]="true"
+          [feedback]="false"
+          styleClass="w-full"
+          [inputStyle]="{ width: '100%;' }"
+        ></p-password>
+      </div>
+    </div>
+
+    <ng-template pTemplate="footer">
+      <p-button label="Login" class="w-full" icon="pi pi-check"></p-button>
+
+      <p-button
+        label="Dont have an account? Click here"
+        [link]="true"
+      ></p-button>
+    </ng-template>
+  </p-card>
+</div>
