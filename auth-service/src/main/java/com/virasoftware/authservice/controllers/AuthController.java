@@ -8,11 +8,11 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.virasoftware.authservice.domains.dtos.LoginRequestDto;
-import com.virasoftware.authservice.domains.dtos.RefreshRequestDto;
-import com.virasoftware.authservice.domains.dtos.RefreshResponseDto;
-import com.virasoftware.authservice.domains.dtos.RegisterDto;
-import com.virasoftware.authservice.domains.dtos.UserDto;
+import com.virasoftware.authservice.dtos.LoginRequestDto;
+import com.virasoftware.authservice.dtos.RefreshRequestDto;
+import com.virasoftware.authservice.dtos.RefreshResponseDto;
+import com.virasoftware.authservice.dtos.RegisterDto;
+import com.virasoftware.authservice.dtos.UserDto;
 import com.virasoftware.authservice.services.AuthService;
 import com.virasoftware.authservice.services.RefreshTokenService;
 import com.virasoftware.common.aspects.ValidateErrors;

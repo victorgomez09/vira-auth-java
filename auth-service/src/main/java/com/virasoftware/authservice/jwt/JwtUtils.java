@@ -13,9 +13,9 @@ import org.springframework.stereotype.Component;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
-import com.virasoftware.authservice.domains.dtos.AccessToken;
-import com.virasoftware.authservice.domains.dtos.UserDto;
 import com.virasoftware.authservice.domains.entities.AuthUser;
+import com.virasoftware.authservice.dtos.AccessToken;
+import com.virasoftware.authservice.dtos.UserDto;
 import com.virasoftware.authservice.feign.UserFeignClient;
 
 @Component

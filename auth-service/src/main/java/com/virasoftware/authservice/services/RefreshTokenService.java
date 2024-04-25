@@ -8,9 +8,9 @@ import java.util.UUID;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import com.virasoftware.authservice.domains.dtos.RefreshRequestDto;
-import com.virasoftware.authservice.domains.dtos.RefreshResponseDto;
 import com.virasoftware.authservice.domains.entities.RefreshToken;
+import com.virasoftware.authservice.dtos.RefreshRequestDto;
+import com.virasoftware.authservice.dtos.RefreshResponseDto;
 import com.virasoftware.authservice.domains.entities.AuthUser;
 import com.virasoftware.authservice.jwt.JwtUtils;
 import com.virasoftware.authservice.repository.RefreshTokenRepository;

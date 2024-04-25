@@ -8,10 +8,10 @@ import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.virasoftware.authservice.domains.dtos.EmailDto;
-import com.virasoftware.authservice.domains.dtos.EmailUpdateDto;
-import com.virasoftware.authservice.domains.dtos.UserDto;
 import com.virasoftware.authservice.domains.entities.AuthUser;
+import com.virasoftware.authservice.dtos.EmailDto;
+import com.virasoftware.authservice.dtos.EmailUpdateDto;
+import com.virasoftware.authservice.dtos.UserDto;
 import com.virasoftware.authservice.feign.UserFeignClient;
 import com.virasoftware.authservice.repository.UserRepository;
 import com.virasoftware.common.dto.EmailVerificationDto;
@@ -26,12 +26,12 @@ public class EmailService {
 
     private final UserFeignClient userFeignClient;
     private final UserRepository userRepository;
-    private final KafkaTemplate<String, EmailVerificationDto> emailVerificationKafkaTemplate;
-    private final KafkaTemplate<String, EmailUpdateDto> emailUpdateKafkaTemplate;
+//    private final KafkaTemplate<String, EmailVerificationDto> emailVerificationKafkaTemplate;
+//    private final KafkaTemplate<String, EmailUpdateDto> emailUpdateKafkaTemplate;
 
     public void sendActivationCode(String username, String email, String activationCode) {
         EmailVerificationDto emailVerificationDto = new EmailVerificationDto(username, email, activationCode);
-        emailVerificationKafkaTemplate.send("user-email-verify-topic", emailVerificationDto);
+//        emailVerificationKafkaTemplate.send("user-email-verify-topic", emailVerificationDto);
     }
 
     @Transactional
@@ -56,8 +56,8 @@ public class EmailService {
 
         sendActivationCode(user.getUsername(), user.getEmail(), activationCode);
 
-        EmailUpdateDto emailUpdateDto = new EmailUpdateDto(userId, requestDto.getEmail());
-        emailUpdateKafkaTemplate.send("user-email-update-topic", emailUpdateDto);
+//        EmailUpdateDto emailUpdateDto = new EmailUpdateDto(userId, requestDto.getEmail());
+//        emailUpdateKafkaTemplate.send("user-email-update-topic", emailUpdateDto);
     }
 
     public void verifyEmail(String activationCode) {

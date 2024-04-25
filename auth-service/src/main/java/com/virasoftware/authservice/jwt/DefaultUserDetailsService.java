@@ -11,7 +11,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Component;
 
-import com.virasoftware.authservice.domains.dtos.UserDto;
+import com.virasoftware.authservice.dtos.UserDto;
 import com.virasoftware.authservice.feign.UserFeignClient;
 
 import lombok.RequiredArgsConstructor;

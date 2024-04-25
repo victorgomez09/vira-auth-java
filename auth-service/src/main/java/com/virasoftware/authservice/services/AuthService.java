@@ -9,11 +9,11 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.virasoftware.authservice.domains.dtos.LoginRequestDto;
-import com.virasoftware.authservice.domains.dtos.RefreshResponseDto;
-import com.virasoftware.authservice.domains.dtos.RegisterDto;
-import com.virasoftware.authservice.domains.dtos.UserDto;
 import com.virasoftware.authservice.domains.entities.AuthUser;
+import com.virasoftware.authservice.dtos.LoginRequestDto;
+import com.virasoftware.authservice.dtos.RefreshResponseDto;
+import com.virasoftware.authservice.dtos.RegisterDto;
+import com.virasoftware.authservice.dtos.UserDto;
 import com.virasoftware.authservice.feign.UserFeignClient;
 import com.virasoftware.authservice.repository.UserRepository;
 import com.virasoftware.common.exception.ConflictException;
@@ -50,12 +50,13 @@ public class AuthService {
 
 			AuthUser user = new AuthUser();
 			String activationCode = UUID.randomUUID().toString();
+			user.setUserId(userCreated.getId());
 			user.setActivationCode(activationCode);
 			userRepository.save(user);
 
 			emailService.sendActivationCode(userDto.getUsername(), userDto.getEmail(), activationCode);
 
-			return userDto;
+			return userCreated;
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -66,17 +67,20 @@ public class AuthService {
 	public RefreshResponseDto login(LoginRequestDto loginRequestDto) {
 		try {			
  			ResponseEntity<UserDto> response = userFeignClient.findByUsername(loginRequestDto.getUsername());
- 			System.out.println("response: " + response);
 			if (response.getStatusCode() != HttpStatusCode.valueOf(200)) {
 				throw new Exception("error");
 			}
+			System.out.println("response.getBody().getId(): " + response.getBody().getId());
+			System.out.println("response.getBody().getPassword(): " + response.getBody().getPassword());
+			System.out.println("response.getBody().getUsername(): " + response.getBody().getUsername());
 			AuthUser user = userRepository.findByUserId(response.getBody().getId()).orElseThrow();
+			System.out.println("user: " + user.getId());
 			authenticationManager.authenticate(
 					new UsernamePasswordAuthenticationToken(response.getBody().getUsername(), response.getBody().getPassword()));
 			
 			return refreshTokenService.createRefreshToken(user);
 		} catch (Exception e) {
-//			e.printStackTrace();
+			e.printStackTrace();
 		}
 		
 		return null;

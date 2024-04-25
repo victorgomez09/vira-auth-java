@@ -14,7 +14,7 @@ public class CorsConfig extends CorsConfiguration {
 	CorsWebFilter corsFilter() {
 		CorsConfiguration config = new CorsConfiguration();
 		config.setAllowCredentials(false);
-		config.setAllowedOrigins(List.of("http://localhost:5173"));
+		config.setAllowedOrigins(List.of("http://localhost:4200"));
 		config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS", "HEAD"));
 		config.setAllowedHeaders(List.of("origin", "content-type", "accept", "authorization", "cookie"));
 

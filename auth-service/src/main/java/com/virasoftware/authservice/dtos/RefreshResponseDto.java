@@ -1,4 +1,4 @@
-package com.virasoftware.authservice.domains.dtos;
+package com.virasoftware.authservice.dtos;
 
 import lombok.*;
 
