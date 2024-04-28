@@ -3,7 +3,14 @@ import { InputTextModule } from 'primeng/inputtext';
 import { CardModule } from 'primeng/card';
 import { ButtonModule } from 'primeng/button';
 import { PasswordModule } from 'primeng/password';
-import { AbstractControl, FormBuilder, FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import {
+  AbstractControl,
+  FormBuilder,
+  FormControl,
+  FormGroup,
+  ReactiveFormsModule,
+  Validators,
+} from '@angular/forms';
 import { AuthService } from '../../services/auth.service';
 
 interface ILoginForm {
@@ -13,26 +20,38 @@ interface ILoginForm {
 @Component({
   selector: 'app-login',
   standalone: true,
-  imports: [InputTextModule, CardModule, ButtonModule, PasswordModule, ReactiveFormsModule],
+  imports: [
+    InputTextModule,
+    CardModule,
+    ButtonModule,
+    PasswordModule,
+    ReactiveFormsModule,
+  ],
   templateUrl: './login.component.html',
   styleUrl: './login.component.css',
 })
 export class LoginComponent {
-
   public loginForm: FormGroup;
 
-  constructor(private fb: FormBuilder, private authService: AuthService) {
+  constructor(
+    private fb: FormBuilder,
+    private authService: AuthService,
+  ) {
     this.loginForm = this.fb.group<ILoginForm>({
       username: this.fb.control('', Validators.required),
-      password: this.fb.control('', [Validators.required, Validators.minLength(3)])
-    })
+      password: this.fb.control('', [
+        Validators.required,
+        Validators.minLength(3),
+      ]),
+    });
   }
 
   handleLoginSubmit() {
-    console.log(this.loginForm.value)
-    this.authService.login(this.loginForm.value).subscribe(data => {
-      console.log('data', data)
-    })
+    console.log(this.loginForm.value);
+    this.authService.login(this.loginForm.value).subscribe((data) => {
+      console.log('data', data);
+      localStorage.setItem('access_token', data.access_token);
+    });
   }
 
   get f(): { [key: string]: AbstractControl } {

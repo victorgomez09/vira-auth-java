@@ -1,20 +1,20 @@
 meta {
   name: Create user
   type: http
-  seq: 1
+  seq: 2
 }
 
 post {
-  url: http://localhost:8082/api/v1/auth/register
+  url: http://localhost:1209/api/v1/user/create
   body: json
   auth: none
 }
 
 body:json {
   {
-    "username": "vira7",
+    "username": "vira3",
     "password": "viravira",
-    "email": "vira7@vira.com",
+    "email": "vira3@vira.com",
     "firstName": "vira",
     "lastName": "vira",
     "phone": "690334576"

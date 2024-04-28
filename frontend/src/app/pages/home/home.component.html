@@ -1,0 +1,13 @@
+<div class="grid p-2 h-full">
+  <div class="col-2 h-full">
+    <p-tree
+      class="w-full md:w-30rem"
+      [value]="nodes"
+      [filter]="true"
+      (onNodeExpand)="nodeExpand($event)"
+      [loading]="loading"
+    ></p-tree>
+  </div>
+  <p-divider layout="vertical"></p-divider>
+  <div class="col-10"></div>
+</div>
