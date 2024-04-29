@@ -1,21 +1,44 @@
 import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
+import { FormBuilder, FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { DividerModule } from 'primeng/divider';
 import { TreeNode } from 'primeng/api';
 import { TreeModule } from 'primeng/tree';
+import { ButtonModule } from 'primeng/button'
+import { DialogModule } from 'primeng/dialog'
+import { InputTextModule } from 'primeng/inputtext'
+import { InputTextareaModule } from 'primeng/inputtextarea';
+
+interface ISpaceForm {
+  name: FormControl<string | null>;
+  description: FormControl<string | null>;
+  code: FormControl<string | null>;
+}
 
 @Component({
   selector: 'app-home',
   standalone: true,
-  imports: [TreeModule, DividerModule],
+  imports: [TreeModule, DividerModule, ButtonModule, DialogModule,
+    InputTextModule, InputTextareaModule, ReactiveFormsModule],
   templateUrl: './home.component.html',
   styleUrl: './home.component.css',
 })
 export class HomeComponent implements OnInit {
-  loading: boolean = false;
+  public loading: boolean = false;
+  public nodes!: TreeNode[];
+  public visible: boolean = false;
+  public spaceForm: FormGroup;
 
-  nodes!: TreeNode[];
-
-  constructor(private cd: ChangeDetectorRef) {}
+  constructor(private cd: ChangeDetectorRef, private fb: FormBuilder) {
+    this.spaceForm = this.fb.group<ISpaceForm>({
+      name: this.fb.control('', Validators.required),
+      description: this.fb.control(''),
+      code: this.fb.control('', [
+        Validators.required,
+        Validators.minLength(3),
+        Validators.maxLength(3)
+      ]),
+    });
+  }
 
   ngOnInit() {
     this.loading = true;
@@ -62,5 +85,13 @@ export class HomeComponent implements OnInit {
         this.cd.markForCheck();
       }, 500);
     }
+  }
+
+  showDialog() {
+    this.visible = true;
+  }
+
+  handleLoginSubmit() {
+
   }
 }
