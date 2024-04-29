@@ -6,6 +6,7 @@ import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -65,24 +66,21 @@ public class AuthService {
 	}
 
 	public RefreshResponseDto login(LoginRequestDto loginRequestDto) {
-		try {			
- 			ResponseEntity<UserDto> response = userFeignClient.findByUsername(loginRequestDto.getUsername());
+		try {
+			ResponseEntity<UserDto> response = userFeignClient.findByUsername(loginRequestDto.getUsername());
 			if (response.getStatusCode() != HttpStatusCode.valueOf(200)) {
-				throw new Exception("error");
+				throw new UsernameNotFoundException("error");
 			}
-			System.out.println("response.getBody().getId(): " + response.getBody().getId());
-			System.out.println("response.getBody().getPassword(): " + response.getBody().getPassword());
-			System.out.println("response.getBody().getUsername(): " + response.getBody().getUsername());
 			AuthUser user = userRepository.findByUserId(response.getBody().getId()).orElseThrow();
-			System.out.println("user: " + user.getId());
-			authenticationManager.authenticate(
-					new UsernamePasswordAuthenticationToken(response.getBody().getUsername(), response.getBody().getPassword()));
 			
+			authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(response.getBody().getUsername(),
+					loginRequestDto.getPassword()));
+
 			return refreshTokenService.createRefreshToken(user);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		
+
 		return null;
 	}
 

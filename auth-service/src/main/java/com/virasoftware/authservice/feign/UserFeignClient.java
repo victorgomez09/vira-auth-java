@@ -16,11 +16,11 @@ public interface UserFeignClient {
     ResponseEntity<UserDto> create(RegisterDto requestDto);
 
     @GetMapping("/{userId}")
-    ResponseEntity<UserDto> findById(Long id);
+    ResponseEntity<UserDto> findById(@PathVariable Long userId);
 
     @GetMapping("/username/{username}")
     ResponseEntity<UserDto> findByUsername(@PathVariable String username);
 
     @GetMapping("/email/{email}")
-    ResponseEntity<UserDto> findByEmail(String email);
+    ResponseEntity<UserDto> findByEmail(@PathVariable String email);
 }

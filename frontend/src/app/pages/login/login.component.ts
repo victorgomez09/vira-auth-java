@@ -12,6 +12,7 @@ import {
   Validators,
 } from '@angular/forms';
 import { AuthService } from '../../services/auth.service';
+import { Router } from '@angular/router';
 
 interface ILoginForm {
   username: FormControl<string | null>;
@@ -35,6 +36,7 @@ export class LoginComponent {
 
   constructor(
     private fb: FormBuilder,
+    private router: Router,
     private authService: AuthService,
   ) {
     this.loginForm = this.fb.group<ILoginForm>({
@@ -47,10 +49,9 @@ export class LoginComponent {
   }
 
   handleLoginSubmit() {
-    console.log(this.loginForm.value);
     this.authService.login(this.loginForm.value).subscribe((data) => {
-      console.log('data', data);
       localStorage.setItem('access_token', data.access_token);
+      this.router.navigate(['/docs']);
     });
   }
 

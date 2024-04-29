@@ -25,14 +25,13 @@ public class DefaultUserDetailsService implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         ResponseEntity<UserDto> response = userFeignClient.findByUsername(username);
-        if (response.getStatusCode() != HttpStatusCode.valueOf(200)) {
+        if (response.getStatusCode() != HttpStatusCode.valueOf(200) || response.getBody() == null) {
             throw new UsernameNotFoundException("User not found with username: " + username);
         }
-        UserDto user = response.getBody();
 
-        return new User(username, user.getPassword(),
-                user.getRoles().stream()
-                        .map(role -> new SimpleGrantedAuthority(role)).collect(Collectors.toList()));
+        return new User(response.getBody().getUsername(), response.getBody().getPassword(),
+        		response.getBody().getRoles().stream()
+                        .map(SimpleGrantedAuthority::new).collect(Collectors.toList()));
     }
 
 }

@@ -5,10 +5,10 @@ import java.time.Instant;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Component;
 
 import com.auth0.jwt.JWT;
@@ -18,7 +18,10 @@ import com.virasoftware.authservice.dtos.AccessToken;
 import com.virasoftware.authservice.dtos.UserDto;
 import com.virasoftware.authservice.feign.UserFeignClient;
 
+import lombok.RequiredArgsConstructor;
+
 @Component
+@RequiredArgsConstructor
 public class JwtUtils {
 
     @Value("${jwt.secret}")
@@ -26,14 +29,13 @@ public class JwtUtils {
     @Value("${jwt.expiration}")
     private Duration jwtLifeTime;
 
-    @Autowired
-    private UserFeignClient userFeignClient;
+    private final UserFeignClient userFeignClient;
 
     public AccessToken createAccessToken(AuthUser authUser) {
         try {
             ResponseEntity<UserDto> response = userFeignClient.findById(authUser.getUserId());
-            if (response.getStatusCode() != HttpStatusCode.valueOf(200)) {
-                throw new Exception("User not found");
+            if (response.getStatusCode() != HttpStatusCode.valueOf(200) || response.getBody() == null) {
+                throw new UsernameNotFoundException("User not found");
             }
             UserDto user = response.getBody();
 
