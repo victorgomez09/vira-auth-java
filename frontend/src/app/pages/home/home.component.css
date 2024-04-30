@@ -3,6 +3,16 @@
     height: 100%;
 }
 
-.p-treenode-content {
-    padding: 0 !important;
+::ng-deep .p-listbox {
+    border: 0;
+    border-radius: 0;
+    box-shadow: none;
 }
+
+::ng-deep .p-listbox .p-listbox-header {
+    padding: 0;
+}
+
+/* ::ng-deep .p-listbox .p-listbox-list .p-listbox-item {
+    padding-left: 0;
+} */

@@ -26,7 +26,7 @@ services:
     container_name: vira-postgres-auth
     image: postgres:14-alpine
     volumes:
-      - ~/apps/postgres:/var/lib/postgresql/data
+      - ~/apps/postgres/auth:/var/lib/postgresql/data
     environment:
       - POSTGRES_PASSWORD=postgres
       - POSTGRES_USER=postgres
@@ -40,7 +40,7 @@ services:
     container_name: vira-postgres-docs
     image: postgres:14-alpine
     volumes:
-      - ~/apps/postgres:/var/lib/postgresql/data
+      - ~/apps/postgres/docs:/var/lib/postgresql/data
     environment:
       - POSTGRES_PASSWORD=postgres
       - POSTGRES_USER=postgres
@@ -54,7 +54,7 @@ services:
     container_name: vira-postgres-user
     image: postgres:14-alpine
     volumes:
-      - ~/apps/postgres:/var/lib/postgresql/data
+      - ~/apps/postgres/user:/var/lib/postgresql/data
     environment:
       - POSTGRES_PASSWORD=postgres
       - POSTGRES_USER=postgres

@@ -40,7 +40,7 @@ public class PageController {
 	@ValidateErrors
 	public ResponseEntity<List<PageDto>> findAllPagesBySpace(@RequestHeader("X-UserId") String userId,
 			@RequestParam("spaceId") String spaceId, BindingResult result) {
-		return ResponseEntity.ok(pageService.findAllPagesBySpace(spaceId, userId));
+		return ResponseEntity.ok(pageService.findAllPagesBySpace(spaceId, userId).stream().);
 	}
 
 	@Operation(summary = "Get page by id", description = "Get all pages from space")

@@ -1,0 +1,89 @@
+<div class="flex flex-1 justify-content-center align-items-center">
+  <form [formGroup]="registerForm" (ngSubmit)="handleLoginSubmit()">
+    <p-card
+      header="Login"
+      [style]="{ width: '360px', backgroundColor: 'var(--surface-50)' }"
+    >
+      <div>
+        <div class="flex flex-column gap-2 mt-4">
+          <label for="firstname">First name</label>
+          <input
+            pInputText
+            id="firstname"
+            aria-describedby="firstname-help"
+            formControlName="firstName"
+          />
+        </div>
+
+        <div class="flex flex-column gap-2 mt-4">
+          <label for="lastname">Last name</label>
+          <input
+            pInputText
+            id="lastname"
+            aria-describedby="lastname-help"
+            formControlName="lastName"
+          />
+        </div>
+
+        <div class="flex flex-column gap-2 mt-4">
+          <label for="phone">Phone</label>
+          <p-inputNumber
+            mode="decimal"
+            id="phone"
+            styleClass="w-full"
+            aria-describedby="phone-help"
+            formControlName="phone"
+            [useGrouping]="false"
+          />
+        </div>
+
+        <div class="flex flex-column gap-2 mt-4">
+          <label for="email">Email</label>
+          <input
+            pInputText
+            id="email"
+            aria-describedby="email-help"
+            formControlName="email"
+          />
+        </div>
+
+        <div class="flex flex-column gap-2 mt-4">
+          <label for="username">Username</label>
+          <input
+            pInputText
+            id="username"
+            aria-describedby="username-help"
+            formControlName="username"
+          />
+        </div>
+
+        <div class="flex flex-column gap-2 mt-4">
+          <label for="username">Password</label>
+          <p-password
+            [toggleMask]="true"
+            [feedback]="false"
+            styleClass="w-full"
+            [inputStyle]="{ width: '100%;' }"
+            formControlName="password"
+          ></p-password>
+        </div>
+      </div>
+
+      <ng-template pTemplate="footer">
+        <p-button
+          label="Register"
+          class="w-full"
+          icon="pi pi-check"
+          type="submit"
+          [disabled]="registerForm.invalid"
+        ></p-button>
+
+        <p-button
+          label="Already have an account? Click here"
+          routerLink="/login"
+          [link]="true"
+        ></p-button>
+      </ng-template>
+    </p-card>
+  </form>
+</div>

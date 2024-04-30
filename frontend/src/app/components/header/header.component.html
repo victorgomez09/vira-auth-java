@@ -1,0 +1,16 @@
+<p-menubar [model]="items" styleClass="border-noround">
+  <ng-template pTemplate="start">
+    <span class="font-bold text-xl mr-3">VIRA.ecosystem</span>
+  </ng-template>
+  <ng-template pTemplate="end">
+    <p-avatar
+      [label]="user().username.charAt(0).toUpperCase()"
+      styleClass="mr-2"
+      [style]="{
+        backgroundColor: 'var(--primary-color)',
+        color: 'var(--primary-color-text)'
+      }"
+      shape="circle"
+    ></p-avatar>
+  </ng-template>
+</p-menubar>

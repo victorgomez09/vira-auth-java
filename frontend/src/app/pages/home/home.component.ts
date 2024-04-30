@@ -1,12 +1,28 @@
-import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
-import { FormBuilder, FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import {
+  ChangeDetectorRef,
+  Component,
+  OnInit,
+  Signal,
+  WritableSignal,
+  signal,
+} from '@angular/core';
+import {
+  FormBuilder,
+  FormControl,
+  FormGroup,
+  ReactiveFormsModule,
+  Validators,
+} from '@angular/forms';
 import { DividerModule } from 'primeng/divider';
 import { TreeNode } from 'primeng/api';
-import { TreeModule } from 'primeng/tree';
-import { ButtonModule } from 'primeng/button'
-import { DialogModule } from 'primeng/dialog'
-import { InputTextModule } from 'primeng/inputtext'
+import { ListboxClickEvent, ListboxModule } from 'primeng/listbox';
+import { ButtonModule } from 'primeng/button';
+import { DialogModule } from 'primeng/dialog';
+import { InputTextModule } from 'primeng/inputtext';
 import { InputTextareaModule } from 'primeng/inputtextarea';
+import { userStore } from '../../shared/stores/user.store';
+import { HeaderComponent } from '../../components/header/header.component';
+import { Space } from '../../models/docs.model';
 
 interface ISpaceForm {
   name: FormControl<string | null>;
@@ -17,81 +33,66 @@ interface ISpaceForm {
 @Component({
   selector: 'app-home',
   standalone: true,
-  imports: [TreeModule, DividerModule, ButtonModule, DialogModule,
-    InputTextModule, InputTextareaModule, ReactiveFormsModule],
+  imports: [
+    ListboxModule,
+    DividerModule,
+    ButtonModule,
+    DialogModule,
+    InputTextModule,
+    InputTextareaModule,
+    ReactiveFormsModule,
+    HeaderComponent,
+  ],
   templateUrl: './home.component.html',
   styleUrl: './home.component.css',
 })
 export class HomeComponent implements OnInit {
   public loading: boolean = false;
-  public nodes!: TreeNode[];
   public visible: boolean = false;
   public spaceForm: FormGroup;
+  public user;
+  public spaces: WritableSignal<Space[]> = signal([]);
 
-  constructor(private cd: ChangeDetectorRef, private fb: FormBuilder) {
+  constructor(private fb: FormBuilder) {
     this.spaceForm = this.fb.group<ISpaceForm>({
       name: this.fb.control('', Validators.required),
       description: this.fb.control(''),
       code: this.fb.control('', [
         Validators.required,
         Validators.minLength(3),
-        Validators.maxLength(3)
+        Validators.maxLength(3),
       ]),
     });
+
+    this.user = userStore;
   }
 
-  ngOnInit() {
-    this.loading = true;
-    setTimeout(() => {
-      this.nodes = this.initiateNodes();
-      this.loading = false;
-      this.cd.markForCheck();
-    }, 2000);
-  }
-
-  initiateNodes(): TreeNode[] {
-    return [
+  ngOnInit(): void {
+    this.spaces.set([
       {
-        key: '0',
-        label: 'Node 0',
-        leaf: false,
+        id: 1,
+        name: 'Space 1',
+        description: 'First space',
+        code: 'SP1',
+        users: [],
       },
       {
-        key: '1',
-        label: 'Node 1',
-        leaf: false,
+        id: 2,
+        name: 'Space 2',
+        description: 'Second space',
+        code: 'SP2',
+        users: [],
       },
-      {
-        key: '2',
-        label: 'Node 2',
-        leaf: false,
-      },
-    ];
-  }
-
-  nodeExpand(event: any) {
-    if (!event.node.children) {
-      this.loading = true;
-      setTimeout(() => {
-        event.node.children = [];
-        for (let i = 0; i < 3; i++) {
-          event.node.children.push({
-            key: event.node.key + '-' + i,
-            label: 'Node ' + event.node.key + '-' + i,
-            leaf: false,
-          });
-        }
-        this.loading = false;
-        this.cd.markForCheck();
-      }, 500);
-    }
+    ]);
   }
 
   showDialog() {
     this.visible = true;
   }
 
-  handleLoginSubmit() {
+  handleLoginSubmit() {}
 
+  handleClickOption(event: ListboxClickEvent) {
+    console.log('test', event.option);
   }
 }

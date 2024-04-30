@@ -1,39 +1,85 @@
-<div class="grid p-2 h-full">
-  <div class="col-3 lg:col-2 h-full">
-    <div class="flex align-items-center justify-content-between">
-      Your spaces
+<div class="flex flex-column flex-1 w-full h-full">
+  <app-header></app-header>
 
-      <p-button icon="pi pi-check" (click)="showDialog()">New</p-button>
+  <div class="grid m-0 h-full">
+    <div class="col-3 lg:col-2 h-full">
+      <div class="flex align-items-center justify-content-between">
+        Your spaces
+
+        <p-button icon="pi pi-check" [text]="true" (click)="showDialog()"
+          >New</p-button
+        >
+      </div>
+      <p-listbox
+        [options]="spaces()"
+        optionLabel="name"
+        [filter]="true"
+        (onClick)="handleClickOption($event)"
+      ></p-listbox>
     </div>
-    <p-tree styleClass="p-0" class="w-full md:w-30rem" [value]="nodes" (onNodeExpand)="nodeExpand($event)"
-      [loading]="loading"></p-tree>
+    <p-divider styleClass="p-0 m-0" layout="vertical"></p-divider>
+    <div class="col-9 lg:col-10">
+      <div class="p-2">
+        Welcome back, {{ user().firstName }} {{ user().lastName }}
+      </div>
+    </div>
   </div>
-  <p-divider layout="vertical"></p-divider>
-  <div class="col-9 lg:col-10"></div>
 </div>
 
-<p-dialog header="Create new space" [(visible)]="visible" [modal]="true" [style]="{ width: '50vw' }" [draggable]="false"
-  [resizable]="false">
-  <form class="flex flex-column gap-4" [formGroup]="spaceForm" (ngSubmit)="handleLoginSubmit()">
+<p-dialog
+  header="Create new space"
+  [(visible)]="visible"
+  [modal]="true"
+  [style]="{ width: '50vw' }"
+  [draggable]="false"
+  [resizable]="false"
+>
+  <form
+    class="flex flex-column gap-4"
+    [formGroup]="spaceForm"
+    (ngSubmit)="handleLoginSubmit()"
+  >
     <div class="flex flex-column gap-4">
       <div class="flex flex-column gap-2">
         <label for="name">Name</label>
-        <input pInputText id="name" aria-describedby="name-help" formControlName="name" />
+        <input
+          pInputText
+          id="name"
+          aria-describedby="name-help"
+          formControlName="name"
+        />
       </div>
 
       <div class="flex flex-column gap-2">
         <label for="description">Description</label>
-        <textarea rows="5" cols="30" id="description" aria-describedby="description-help" pInputTextarea
-          formControlName="description"></textarea>
+        <textarea
+          rows="5"
+          cols="30"
+          id="description"
+          aria-describedby="description-help"
+          pInputTextarea
+          formControlName="description"
+        ></textarea>
       </div>
     </div>
 
     <div class="flex flex-column gap-2">
       <label for="code">Code</label>
-      <input pInputText id="code" aria-describedby="code-help" formControlName="code" />
+      <input
+        pInputText
+        id="code"
+        aria-describedby="code-help"
+        formControlName="code"
+      />
     </div>
 
-    <p-button label="Create" styleClass="w-full" class="w-full" icon="pi pi-check" type="submit"
-      [disabled]="spaceForm.invalid"></p-button>
+    <p-button
+      label="Create"
+      styleClass="w-full"
+      class="w-full"
+      icon="pi pi-check"
+      type="submit"
+      [disabled]="spaceForm.invalid"
+    ></p-button>
   </form>
 </p-dialog>
