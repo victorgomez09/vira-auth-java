@@ -2,7 +2,6 @@ package com.virasoftware.userservice.controllers;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -29,7 +28,6 @@ import lombok.RequiredArgsConstructor;
 
 @RestController
 @RequestMapping(value = "/api/v1/user")
-@CrossOrigin
 @RequiredArgsConstructor
 @Tag(name = "User API", description = "Interaction with users")
 @SecurityRequirement(name = "Bearer Authentication")

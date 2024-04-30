@@ -37,6 +37,8 @@ public class Page {
     
     private String body;
     
+    private Page parent;
+    
     @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinColumn(name = "space_id")
     private Space space;

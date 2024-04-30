@@ -5,7 +5,11 @@ meta {
 }
 
 get {
-  url: http://localhost:1209/api/v1/user/username/vira2
+  url: http://localhost:8082/api/v1/user
   body: none
-  auth: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ2aXJhNyIsInJvbGVzIjpbXSwiZXhwIjoxNzE0NDc0NzQzLCJ1c2VySWQiOjEwfQ.YTmgKy6F3lyfJYK1TmzwXjMwJ0TBr6HGN9JOSbefgMM
 }

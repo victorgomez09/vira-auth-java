@@ -3,12 +3,10 @@ package com.virasoftware.docservice.services;
 import java.time.Instant;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 
 import com.virasoftware.common.exception.NotFoundException;
-import com.virasoftware.docservice.domains.dtos.PageDto;
 import com.virasoftware.docservice.domains.entities.Page;
 import com.virasoftware.docservice.domains.entities.Space;
 import com.virasoftware.docservice.domains.exceptions.PermissionsException;
@@ -27,16 +25,13 @@ public class PageService {
 	private SpaceRepository spaceRepository;
 	private SpaceUserRepository spaceUserRepository;
 
-	public List<PageDto> findAllPagesBySpace(String spaceId, String userId) {
+	public List<Page> findAllPagesBySpace(String spaceId, String userId) {
 		Space space = checkUserPermissions(spaceId, userId);
 
-		return pageRepository.findBySpace(space).stream()
-				.map(p -> PageDto.builder().id(p.getId()).name(p.getName()).body(p.getBody()).treePos(p.getTreePos())
-						.owner(p.getOwner()).creationDate(p.getCreationDate())
-						.modificationDate(p.getModificationDate()).build()).collect(Collectors.toList());
+		return pageRepository.findBySpace(space);
 	}
 
-	public PageDto findPageById(String pageId, String userId) {
+	public Page findPageById(String pageId, String userId) {
 		Page page = pageRepository.findById(pageId).orElseThrow(() -> new NotFoundException("Page not found"));
 
 		// Check if use have space rights
@@ -44,13 +39,14 @@ public class PageService {
 			throw new PermissionsException("User not have permissions");
 		}
 
-		return new PageDto().fromEntity(page);
+		return page;
 	}
 
-	public PageDto createPage(PageDto requestData, String userId) {
-		checkUserPermissions(requestData.getSpace(), userId);
+	public Page createPage(Page requestData, String userId) {
+		checkUserPermissions(requestData.getSpace().getId(), userId);
 
-		Optional<Page> parentPage = pageRepository.findById(requestData.getParent());
+		Optional<Page> parentPage = pageRepository.findById(requestData.getParent().getId()
+				);
 		Page page = new Page();
 		page.setName(requestData.getName());
 		page.setName(requestData.getBody());
@@ -59,11 +55,11 @@ public class PageService {
 		page.setCreationDate(Instant.now());
 		page.setModificationDate(Instant.now());
 
-		return new PageDto().fromEntity(pageRepository.save(page));
+		return pageRepository.save(page);
 	}
 	
-	public PageDto updatePage(PageDto requestData, String userId) {
-		checkUserPermissions(requestData.getSpace(), userId);
+	public Page updatePage(Page requestData, String userId) {
+		checkUserPermissions(requestData.getSpace().getId(), userId);
 
 		Page page = pageRepository.findById(requestData.getId()).orElseThrow(() -> new NotFoundException("Page not found"));
 		page.setName(requestData.getName());
@@ -71,7 +67,7 @@ public class PageService {
 		page.setCreationDate(Instant.now());
 		page.setModificationDate(Instant.now());
 
-		return new PageDto().fromEntity(pageRepository.save(page));
+		return pageRepository.save(page);
 	}
 	
 	public void deletePage(String pageId, String userId) {

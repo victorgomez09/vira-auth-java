@@ -4,14 +4,15 @@ import java.util.List;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.virasoftware.common.aspects.ValidateErrors;
@@ -27,7 +28,6 @@ import lombok.RequiredArgsConstructor;
 
 @RestController
 @RequestMapping(value = "/api/v1/doc/page")
-@CrossOrigin
 @RequiredArgsConstructor
 @Tag(name = "Page API", description = "Interaction with pages")
 @SecurityRequirement(name = "Bearer Authentication")
@@ -36,18 +36,18 @@ public class PageController {
 	private final PageService pageService;
 
 	@Operation(summary = "Get all pages from space", description = "Get all pages from space")
-	@PostMapping
+	@GetMapping
 	@ValidateErrors
 	public ResponseEntity<List<PageDto>> findAllPagesBySpace(@RequestHeader("X-UserId") String userId,
-			@PathVariable("space") String spaceId, BindingResult result) {
+			@RequestParam("spaceId") String spaceId, BindingResult result) {
 		return ResponseEntity.ok(pageService.findAllPagesBySpace(spaceId, userId));
 	}
 
 	@Operation(summary = "Get page by id", description = "Get all pages from space")
-	@PostMapping
+	@GetMapping("/{pageId}")
 	@ValidateErrors
 	public ResponseEntity<PageDto> findPageById(@RequestHeader("X-UserId") String userId,
-			@PathVariable("page") String pageId, BindingResult result) {
+			@PathVariable("pageId") String pageId, BindingResult result) {
 		return ResponseEntity.ok(pageService.findPageById(pageId, userId));
 	}
 

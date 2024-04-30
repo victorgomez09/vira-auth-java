@@ -51,7 +51,7 @@ export class LoginComponent {
 
   handleLoginSubmit() {
     this.authService.login(this.loginForm.value).subscribe((data) => {
-      localStorage.setItem('access_token', data.access_token);
+      localStorage.setItem('access_token', data.accessToken);
       this.router.navigate(['/docs']);
     });
   }

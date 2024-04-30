@@ -4,8 +4,10 @@ import java.util.List;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -13,7 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.virasoftware.common.aspects.ValidateErrors;
 import com.virasoftware.docservice.domains.dtos.SpaceDto;
-import com.virasoftware.docservice.domains.dtos.SpaceResponseDto;
+import com.virasoftware.docservice.mappers.SpaceMapper;
 import com.virasoftware.docservice.services.SpaceService;
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -25,19 +27,28 @@ import lombok.RequiredArgsConstructor;
 
 @RestController
 @RequestMapping(value = "/api/v1/doc/space")
-@CrossOrigin
 @RequiredArgsConstructor
 @Tag(name = "Space API", description = "Interaction with spaces")
 @SecurityRequirement(name = "Bearer Authentication")
 public class SpaceController {
 
-	private final SpaceService spaceService;
-	
+	private final SpaceService service;
+	private final SpaceMapper mapper;
+
 	@Operation(summary = "Get all spaces from user", description = "Get all spaces from user")
-	@PostMapping
+	@GetMapping
 	@ValidateErrors
-	public ResponseEntity<List<SpaceResponseDto>> findAllSpacesByUser(@RequestHeader("X-UserId") String userId, BindingResult result) {
-		return ResponseEntity.ok(spaceService.findAllSpacesByUser(userId));
+	public ResponseEntity<List<SpaceDto>> findAllSpacesByUser(@RequestHeader("X-UserId") String userId,
+			BindingResult result) {
+		return ResponseEntity.ok(service.findAllSpacesByUser(userId).stream().map(mapper::toDto).toList());
+	}
+
+	@Operation(summary = "Get space with id", description = "Get space with id")
+	@GetMapping("/{spaceId}")
+	@ValidateErrors
+	public ResponseEntity<SpaceDto> findSpaceById(@RequestHeader("X-UserId") String userId,
+			@PathVariable("spaceId") String spaceId, BindingResult result) {
+		return ResponseEntity.ok(mapper.toDto(service.findSpaceById(spaceId, userId)));
 	}
 
 	@Operation(summary = "Create a new space", description = "Create new space")
@@ -45,14 +56,14 @@ public class SpaceController {
 	@ValidateErrors
 	public ResponseEntity<SpaceDto> createSpace(@RequestBody @Valid SpaceDto requestDto,
 			@Parameter(hidden = true) @RequestHeader("X-UserId") String userId, BindingResult result) {
-		return ResponseEntity.ok(spaceService.createSpace(requestDto, userId));
+		return ResponseEntity.ok(mapper.toDto(service.createSpace(mapper.toEntity(requestDto), userId)));
 	}
-	
+
 	@Operation(summary = "Update a space", description = "Update a space")
-	@PostMapping
+	@PutMapping
 	@ValidateErrors
 	public ResponseEntity<SpaceDto> updateSpace(@RequestBody @Valid SpaceDto requestDto,
 			@Parameter(hidden = true) @RequestHeader("X-UserId") String userId, BindingResult result) {
-		return ResponseEntity.ok(spaceService.updateSpace(requestDto, userId));
-	}	
+		return ResponseEntity.ok(mapper.toDto(service.updateSpace(mapper.toEntity(requestDto), userId)));
+	}
 }
