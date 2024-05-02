@@ -1,8 +1,9 @@
 import { HttpClient } from '@angular/common/http';
-import { Injectable, Signal, inject, signal } from '@angular/core';
-import { User } from '../models/user.model';
-import { environment } from '../../environments/environment';
+import { Injectable, inject } from '@angular/core';
 import { tap } from 'rxjs';
+
+import { environment } from '../../environments/environment';
+import { User } from '../models/user.model';
 import { userStore } from '../shared/stores/user.store';
 
 @Injectable({

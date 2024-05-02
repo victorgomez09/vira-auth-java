@@ -8,7 +8,7 @@ import lombok.Setter;
 @Getter
 @Setter
 public class RegisterDto {
-    private Long id;
+    private String id;
     @NotBlank(message = "Please, enter your username!")
     private String username;
     @NotBlank(message = "Please, enter your password!")

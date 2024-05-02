@@ -48,7 +48,7 @@ public class JwtUtils {
                     .withExpiresAt(expiresAt)
                     .sign(Algorithm.HMAC256(secret));
 
-            return new AccessToken(token, expiresAt);
+            return new AccessToken(authUser.getUserId(), token, expiresAt, null, null);
         } catch (Exception e) {
             e.printStackTrace();
         }

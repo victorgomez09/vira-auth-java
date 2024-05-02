@@ -16,7 +16,7 @@ public class CorsConfig extends CorsConfiguration {
 		config.setAllowCredentials(false);
 		config.setAllowedOrigins(List.of("http://localhost:4200"));
 		config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS", "HEAD"));
-		config.setAllowedHeaders(List.of("origin", "content-type", "accept", "authorization", "cookie"));
+		config.setAllowedHeaders(List.of("origin", "content-type", "accept", "authorization", "cookie", "X-User-Id"));
 
 		UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
 		source.registerCorsConfiguration("/**", config);

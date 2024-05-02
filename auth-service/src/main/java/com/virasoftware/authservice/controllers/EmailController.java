@@ -38,7 +38,7 @@ public class EmailController {
     public ResponseEntity<String> updateEmail(
             @RequestBody @Valid EmailDto requestDto,
             BindingResult result,
-            @Parameter(hidden = true) @RequestHeader("X-User-Id") Long userId
+            @Parameter(hidden = true) @RequestHeader("X-User-Id") String userId
     ) {
         emailService.updateEmail(userId, requestDto);
         

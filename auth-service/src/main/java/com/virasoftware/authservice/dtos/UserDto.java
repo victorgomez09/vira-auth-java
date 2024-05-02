@@ -14,7 +14,7 @@ import lombok.Setter;
 @Setter
 public class UserDto implements Dto<AuthUser> {
     // TODO: validate what will if user post with id
-    private Long id;
+    private String id;
     private String username;
     private String email;
     private String password;

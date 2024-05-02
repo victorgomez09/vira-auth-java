@@ -8,8 +8,8 @@ import org.springframework.stereotype.Repository;
 import com.virasoftware.authservice.domains.entities.AuthUser;
 
 @Repository
-public interface UserRepository extends JpaRepository<AuthUser, Long> {
+public interface UserRepository extends JpaRepository<AuthUser, String> {
 
     Optional<AuthUser> findByActivationCode(String activationCode);
-    Optional<AuthUser> findByUserId(Long userId);
+    Optional<AuthUser> findByUserId(String userId);
 }

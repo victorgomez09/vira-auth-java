@@ -4,6 +4,7 @@ export type Login = {
 };
 
 export type LoginResponse = {
+  id: string;
   accessToken: string;
   refreshToken: string;
 };

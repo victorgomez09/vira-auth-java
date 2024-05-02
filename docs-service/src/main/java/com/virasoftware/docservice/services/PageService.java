@@ -45,11 +45,11 @@ public class PageService {
 	public Page createPage(Page requestData, String userId) {
 		checkUserPermissions(requestData.getSpace().getId(), userId);
 
-		Optional<Page> parentPage = pageRepository.findById(requestData.getParent().getId()
-				);
+		Optional<Page> parentPage = pageRepository.findById(requestData.getParent().getId());
 		Page page = new Page();
 		page.setName(requestData.getName());
 		page.setName(requestData.getBody());
+		page.setParent(parentPage.isEmpty() ? null : parentPage.get());
 		page.setOwner(userId);
 		page.setTreePos(parentPage.isEmpty() ? Constants.INITIAL_TREE_POS : parentPage.get().getTreePos() + "10");
 		page.setCreationDate(Instant.now());
@@ -57,11 +57,12 @@ public class PageService {
 
 		return pageRepository.save(page);
 	}
-	
+
 	public Page updatePage(Page requestData, String userId) {
 		checkUserPermissions(requestData.getSpace().getId(), userId);
 
-		Page page = pageRepository.findById(requestData.getId()).orElseThrow(() -> new NotFoundException("Page not found"));
+		Page page = pageRepository.findById(requestData.getId())
+				.orElseThrow(() -> new NotFoundException("Page not found"));
 		page.setName(requestData.getName());
 		page.setName(requestData.getBody());
 		page.setCreationDate(Instant.now());
@@ -69,12 +70,12 @@ public class PageService {
 
 		return pageRepository.save(page);
 	}
-	
+
 	public void deletePage(String pageId, String userId) {
 		Page page = pageRepository.findById(pageId).orElseThrow(() -> new NotFoundException("Page not found"));
-		
+
 		checkUserPermissions(page.getSpace().getId(), userId);
-		
+
 		pageRepository.delete(page);
 	}
 
@@ -82,13 +83,12 @@ public class PageService {
 	 * PRIVATE METHODS
 	 */
 	private Space checkUserPermissions(String spaceId, String userId) {
-		Space space = spaceRepository.findById(spaceId)
-				.orElseThrow(() -> new NotFoundException("Space not found"));
+		Space space = spaceRepository.findById(spaceId).orElseThrow(() -> new NotFoundException("Space not found"));
 		if (spaceUserRepository.findBySpaceAndUser(space, userId).isEmpty()) {
 			throw new PermissionsException("User have not see this space");
 		}
-		
+
 		return space;
 	}
-	
+
 }

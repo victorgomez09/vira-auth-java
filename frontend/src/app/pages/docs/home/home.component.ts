@@ -1,11 +1,4 @@
-import {
-  ChangeDetectorRef,
-  Component,
-  OnInit,
-  Signal,
-  WritableSignal,
-  signal,
-} from '@angular/core';
+import { Component, OnInit, WritableSignal, signal } from '@angular/core';
 import {
   FormBuilder,
   FormControl,
@@ -13,16 +6,16 @@ import {
   ReactiveFormsModule,
   Validators,
 } from '@angular/forms';
-import { DividerModule } from 'primeng/divider';
-import { TreeNode } from 'primeng/api';
-import { ListboxClickEvent, ListboxModule } from 'primeng/listbox';
 import { ButtonModule } from 'primeng/button';
 import { DialogModule } from 'primeng/dialog';
+import { DividerModule } from 'primeng/divider';
 import { InputTextModule } from 'primeng/inputtext';
 import { InputTextareaModule } from 'primeng/inputtextarea';
-import { userStore } from '../../shared/stores/user.store';
-import { HeaderComponent } from '../../components/header/header.component';
-import { Space } from '../../models/docs.model';
+import { ListboxClickEvent, ListboxModule } from 'primeng/listbox';
+import { HeaderComponent } from '../../../components/header/header.component';
+import { Space } from '../../../models/docs.model';
+import { userStore } from '../../../shared/stores/user.store';
+import { DocService } from '../../../services/doc.service';
 
 interface ISpaceForm {
   name: FormControl<string | null>;
@@ -47,13 +40,16 @@ interface ISpaceForm {
   styleUrl: './home.component.css',
 })
 export class HomeComponent implements OnInit {
-  public loading: boolean = false;
-  public visible: boolean = false;
+  public loading: boolean;
+  public visible: boolean;
   public spaceForm: FormGroup;
   public user;
-  public spaces: WritableSignal<Space[]> = signal([]);
+  public spaces: WritableSignal<Space[]>;
 
-  constructor(private fb: FormBuilder) {
+  constructor(
+    private fb: FormBuilder,
+    private service: DocService,
+  ) {
     this.spaceForm = this.fb.group<ISpaceForm>({
       name: this.fb.control('', Validators.required),
       description: this.fb.control(''),
@@ -64,26 +60,30 @@ export class HomeComponent implements OnInit {
       ]),
     });
 
+    this.loading = false;
+    this.visible = false;
     this.user = userStore;
+    this.spaces = this.service.spaces;
   }
 
   ngOnInit(): void {
-    this.spaces.set([
-      {
-        id: 1,
-        name: 'Space 1',
-        description: 'First space',
-        code: 'SP1',
-        users: [],
-      },
-      {
-        id: 2,
-        name: 'Space 2',
-        description: 'Second space',
-        code: 'SP2',
-        users: [],
-      },
-    ]);
+    this.service.getAllSpacesFromUser();
+    // this.spaces.set([
+    //   {
+    //     id: 1,
+    //     name: 'Space 1',
+    //     description: 'First space',
+    //     code: 'SP1',
+    //     users: [],
+    //   },
+    //   {
+    //     id: 2,
+    //     name: 'Space 2',
+    //     description: 'Second space',
+    //     code: 'SP2',
+    //     users: [],
+    //   },
+    // ]);
   }
 
   showDialog() {

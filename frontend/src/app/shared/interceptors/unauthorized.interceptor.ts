@@ -14,7 +14,6 @@ export const ErrorResponseInterceptor: HttpInterceptorFn = (
 function handleErrorResponse(
   error: HttpErrorResponse,
 ): ReturnType<typeof throwError> {
-  console.log('error.status', error.status);
   if (error.status === 401) {
     localStorage.removeItem('access_token');
   }

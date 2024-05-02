@@ -7,6 +7,9 @@ import java.time.Instant;
 @AllArgsConstructor
 @Getter
 public class AccessToken {
-    private String token;
-    private Instant expiration;
+	private String id;
+	private String accessToken;
+    private Instant accessTokenExpiration;
+    private String refreshToken;
+    private Instant refreshTokenExpiration;
 }

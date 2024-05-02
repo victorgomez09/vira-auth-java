@@ -44,8 +44,9 @@ public class RefreshTokenService {
                 .build());
 
         return RefreshResponseDto.builder()
-                .accessToken(accessToken.getToken())
-                .accessTokenExpiration(accessToken.getExpiration())
+        		.id(user.getUserId())
+                .accessToken(accessToken.getAccessToken())
+                .accessTokenExpiration(accessToken.getAccessTokenExpiration())
                 .refreshToken(refreshToken.getToken())
                 .refreshTokenExpiration(refreshToken.getExpiration())
                 .build();
@@ -63,8 +64,8 @@ public class RefreshTokenService {
         updateToken(refreshToken);
 
         return RefreshResponseDto.builder()
-                .accessToken(accessToken.getToken())
-                .accessTokenExpiration(accessToken.getExpiration())
+                .accessToken(accessToken.getAccessToken())
+                .accessTokenExpiration(accessToken.getAccessTokenExpiration())
                 .refreshToken(refreshToken.getToken())
                 .refreshTokenExpiration(refreshToken.getExpiration())
                 .build();

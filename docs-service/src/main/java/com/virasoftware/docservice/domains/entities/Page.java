@@ -37,6 +37,8 @@ public class Page {
     
     private String body;
     
+    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @JoinColumn(name = "parent_id")
     private Page parent;
     
     @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)

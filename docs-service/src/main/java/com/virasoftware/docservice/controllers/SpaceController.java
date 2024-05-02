@@ -38,7 +38,7 @@ public class SpaceController {
 	@Operation(summary = "Get all spaces from user", description = "Get all spaces from user")
 	@GetMapping
 	@ValidateErrors
-	public ResponseEntity<List<SpaceDto>> findAllSpacesByUser(@RequestHeader("X-UserId") String userId,
+	public ResponseEntity<List<SpaceDto>> findAllSpacesByUser(@RequestHeader("X-User-Id") String userId,
 			BindingResult result) {
 		return ResponseEntity.ok(service.findAllSpacesByUser(userId).stream().map(mapper::toDto).toList());
 	}
@@ -46,7 +46,7 @@ public class SpaceController {
 	@Operation(summary = "Get space with id", description = "Get space with id")
 	@GetMapping("/{spaceId}")
 	@ValidateErrors
-	public ResponseEntity<SpaceDto> findSpaceById(@RequestHeader("X-UserId") String userId,
+	public ResponseEntity<SpaceDto> findSpaceById(@RequestHeader("X-User-Id") String userId,
 			@PathVariable("spaceId") String spaceId, BindingResult result) {
 		return ResponseEntity.ok(mapper.toDto(service.findSpaceById(spaceId, userId)));
 	}
@@ -55,7 +55,7 @@ public class SpaceController {
 	@PostMapping
 	@ValidateErrors
 	public ResponseEntity<SpaceDto> createSpace(@RequestBody @Valid SpaceDto requestDto,
-			@Parameter(hidden = true) @RequestHeader("X-UserId") String userId, BindingResult result) {
+			@Parameter(hidden = true) @RequestHeader("X-User-Id") String userId, BindingResult result) {
 		return ResponseEntity.ok(mapper.toDto(service.createSpace(mapper.toEntity(requestDto), userId)));
 	}
 
@@ -63,7 +63,7 @@ public class SpaceController {
 	@PutMapping
 	@ValidateErrors
 	public ResponseEntity<SpaceDto> updateSpace(@RequestBody @Valid SpaceDto requestDto,
-			@Parameter(hidden = true) @RequestHeader("X-UserId") String userId, BindingResult result) {
+			@Parameter(hidden = true) @RequestHeader("X-User-Id") String userId, BindingResult result) {
 		return ResponseEntity.ok(mapper.toDto(service.updateSpace(mapper.toEntity(requestDto), userId)));
 	}
 }

@@ -16,7 +16,7 @@ public interface UserFeignClient {
     ResponseEntity<UserDto> create(RegisterDto requestDto);
 
     @GetMapping("/{userId}")
-    ResponseEntity<UserDto> findById(@PathVariable Long userId);
+    ResponseEntity<UserDto> findById(@PathVariable String userId);
 
     @GetMapping("/username/{username}")
     ResponseEntity<UserDto> findByUsername(@PathVariable String username);

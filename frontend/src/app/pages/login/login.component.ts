@@ -13,6 +13,7 @@ import {
 } from '@angular/forms';
 import { AuthService } from '../../services/auth.service';
 import { Router } from '@angular/router';
+import { userStore } from '../../shared/stores/user.store';
 
 interface ILoginForm {
   username: FormControl<string | null>;
@@ -51,6 +52,7 @@ export class LoginComponent {
 
   handleLoginSubmit() {
     this.authService.login(this.loginForm.value).subscribe((data) => {
+      userStore.update((user) => (user.id = data.id));
       localStorage.setItem('access_token', data.accessToken);
       this.router.navigate(['/docs']);
     });

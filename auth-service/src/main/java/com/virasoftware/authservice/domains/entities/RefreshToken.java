@@ -11,7 +11,6 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToOne;
-import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -28,13 +27,15 @@ import lombok.Setter;
 @Builder
 public class RefreshToken {
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "ref_token_id_seq")
-    @SequenceGenerator(name = "ref_token_id_seq", sequenceName = "ref_token_id_seq", allocationSize = 1)
-    private Long id;
+    @GeneratedValue(strategy = GenerationType.UUID)
+    private String id;
+    
     @Column(nullable = false)
     private String token;
+    
     @Column(nullable = false)
     private Instant expiration;
+    
     @OneToOne
     @JoinColumn(name = "userId", nullable = false)
     private AuthUser user;

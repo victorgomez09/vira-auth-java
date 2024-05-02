@@ -4,13 +4,11 @@ import java.util.UUID;
 
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
-import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.virasoftware.authservice.domains.entities.AuthUser;
 import com.virasoftware.authservice.dtos.EmailDto;
-import com.virasoftware.authservice.dtos.EmailUpdateDto;
 import com.virasoftware.authservice.dtos.UserDto;
 import com.virasoftware.authservice.feign.UserFeignClient;
 import com.virasoftware.authservice.repository.UserRepository;
@@ -35,7 +33,7 @@ public class EmailService {
     }
 
     @Transactional
-    public void updateEmail(Long userId, EmailDto requestDto) {
+    public void updateEmail(String userId, EmailDto requestDto) {
         ResponseEntity<UserDto> response = userFeignClient.findByEmail(requestDto.getEmail());
         if (response.getStatusCode() == HttpStatusCode.valueOf(200)) {
             throw new ConflictException("User with email already exists!");
