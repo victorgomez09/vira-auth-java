@@ -1,0 +1,7 @@
+<div class="flex flex-1 flex-column h-full w-full gap-2">
+    <p-editor [(ngModel)]="pageContent" class="h-full" [style]="{height: 'calc(100% -3em)'}" />
+
+    @if (isEditting) {
+    <p-button label="Save" (onClick)="handlePageSubmit()" />
+    }
+</div>

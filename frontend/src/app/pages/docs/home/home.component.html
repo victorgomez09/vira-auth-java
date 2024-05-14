@@ -1,85 +1,22 @@
-<div class="flex flex-column flex-1 w-full h-full">
-  <app-header></app-header>
-
-  <div class="grid m-0 h-full">
-    <div class="col-3 lg:col-2 h-full">
-      <div class="flex align-items-center justify-content-between">
-        Your spaces
-
-        <p-button icon="pi pi-check" [text]="true" (click)="showDialog()"
-          >New</p-button
-        >
-      </div>
-      <p-listbox
-        [options]="spaces()"
-        optionLabel="name"
-        [filter]="true"
-        (onClick)="handleClickOption($event)"
-      ></p-listbox>
-    </div>
-    <p-divider styleClass="p-0 m-0" layout="vertical"></p-divider>
-    <div class="col-9 lg:col-10">
-      <div class="p-2">
-        Welcome back, {{ user().firstName }} {{ user().lastName }}
-      </div>
-    </div>
-  </div>
+<div class="p-2">
+  Welcome back, {{ user().firstName }} {{ user().lastName }}
 </div>
 
-<p-dialog
-  header="Create new space"
-  [(visible)]="visible"
-  [modal]="true"
-  [style]="{ width: '50vw' }"
-  [draggable]="false"
-  [resizable]="false"
->
-  <form
-    class="flex flex-column gap-4"
-    [formGroup]="spaceForm"
-    (ngSubmit)="handleLoginSubmit()"
-  >
-    <div class="flex flex-column gap-4">
-      <div class="flex flex-column gap-2">
-        <label for="name">Name</label>
-        <input
-          pInputText
-          id="name"
-          aria-describedby="name-help"
-          formControlName="name"
-        />
+<div class="flex mt-4">
+  @for (space of spaces(); track $index) {
+  <p-card [header]="space.code" [subheader]="space.name" class="w-24">
+    <p>
+      @if (space.description) {
+      {{space.description}}
+      } @else {
+      No description provided
+      }
+    </p>
+    <ng-template pTemplate="footer">
+      <div class="flex gap-3 mt-1">
+        <p-button label="View" class="w-full" styleClass="w-full" />
       </div>
-
-      <div class="flex flex-column gap-2">
-        <label for="description">Description</label>
-        <textarea
-          rows="5"
-          cols="30"
-          id="description"
-          aria-describedby="description-help"
-          pInputTextarea
-          formControlName="description"
-        ></textarea>
-      </div>
-    </div>
-
-    <div class="flex flex-column gap-2">
-      <label for="code">Code</label>
-      <input
-        pInputText
-        id="code"
-        aria-describedby="code-help"
-        formControlName="code"
-      />
-    </div>
-
-    <p-button
-      label="Create"
-      styleClass="w-full"
-      class="w-full"
-      icon="pi pi-check"
-      type="submit"
-      [disabled]="spaceForm.invalid"
-    ></p-button>
-  </form>
-</p-dialog>
+    </ng-template>
+  </p-card>
+  }
+</div>

@@ -52,7 +52,7 @@ export class LoginComponent {
 
   handleLoginSubmit() {
     this.authService.login(this.loginForm.value).subscribe((data) => {
-      userStore.update((user) => (user.id = data.id));
+      // userStore.update((user) => (user.id = data.id));
       localStorage.setItem('access_token', data.accessToken);
       this.router.navigate(['/docs']);
     });

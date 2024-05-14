@@ -17,6 +17,7 @@ import { HeaderComponent } from '../../../components/header/header.component';
 import { Space } from '../../../models/docs.model';
 import { DocService } from '../../../services/doc.service';
 import { userStore } from '../../../shared/stores/user.store';
+import { RouterModule } from '@angular/router';
 
 interface ISpaceForm {
   name: FormControl<string | null>;
@@ -37,19 +38,34 @@ interface ISpaceForm {
     InputTextareaModule,
     ReactiveFormsModule,
     HeaderComponent,
+    RouterModule
   ],
-  templateUrl: './home.component.html',
-  styleUrl: './home.component.css',
+  templateUrl: './docs.component.html',
+  styleUrl: './docs.component.css',
 })
-export class HomeComponent implements OnInit {
+export class DocsComponent implements OnInit {
   public loading: boolean;
+  public visible: boolean;
+  public spaceForm: FormGroup;
   public user;
   public spaces: WritableSignal<Space[]>;
 
   constructor(
+    private fb: FormBuilder,
     private service: DocService,
   ) {
+    this.spaceForm = this.fb.group<ISpaceForm>({
+      name: this.fb.control('', Validators.required),
+      description: this.fb.control(''),
+      code: this.fb.control('', [
+        Validators.required,
+        Validators.minLength(3),
+        Validators.maxLength(3),
+      ]),
+    });
+
     this.loading = false;
+    this.visible = false;
     this.user = userStore;
     this.spaces = this.service.spaces;
   }
@@ -72,5 +88,15 @@ export class HomeComponent implements OnInit {
     //     users: [],
     //   },
     // ]);
+  }
+
+  showDialog() {
+    this.visible = true;
+  }
+
+  handleLoginSubmit() { }
+
+  handleClickOption(event: ListboxClickEvent) {
+    console.log('test', event.option);
   }
 }
