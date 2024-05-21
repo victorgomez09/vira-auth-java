@@ -6,6 +6,7 @@ import java.util.List;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -26,31 +27,31 @@ import lombok.Setter;
 @Getter
 @Setter
 public class Space {
-	
+
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private String id;
-    
+
     @Column(unique = true, nullable = false)
     private String name;
-    
+
     @Column(unique = true, nullable = false)
     private String code;
-    
+
     private String description;
-    
+
     private String owner;
-    
-    @OneToMany(mappedBy = "space", fetch = FetchType.EAGER)
+
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private List<SpaceUser> users;
-    
+
     @OneToMany(mappedBy = "space", fetch = FetchType.EAGER)
     private List<Page> pages;
-    
+
     @CreationTimestamp
     @Column(name = "creation_date")
     private Instant creationDate;
-    
+
     @UpdateTimestamp
     @Column(name = "modification_date")
     private Instant modificationDate;

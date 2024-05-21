@@ -1,10 +1,13 @@
 package com.virasoftware.docservice.services;
 
 import java.time.Instant;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
-import org.apache.kafka.common.errors.ResourceNotFoundException;
 import org.springframework.stereotype.Service;
 
 import com.virasoftware.common.exception.ConflictException;
@@ -27,14 +30,16 @@ public class SpaceService {
 	private final SpaceUserRepository spaceUserRepository;
 
 	public List<Space> findAllSpacesByUser(String userId) {
-		return spaceUserRepository.findAllByUser(userId).stream().map(SpaceUser::getSpace).collect(Collectors.toList());
+		return spaceRepository.findAllByUser(userId);
 	}
-	
+
 	public Space findSpaceById(String spaceId, String userId) {
-		Space space = spaceRepository.findById(spaceId).orElseThrow(() -> new ResourceNotFoundException("Space not found"));
-		
-		spaceUserRepository.findBySpaceAndUser(space, userId).orElseThrow(() -> new UnauthorizedException("User dont have access to this space"));
-		
+		Space space = spaceRepository.findById(spaceId)
+				.orElseThrow(() -> new NotFoundException("Space not found"));
+
+		spaceRepository.findByIdAndUser(spaceId, userId)
+				.orElseThrow(() -> new UnauthorizedException("User dont have access to this space"));
+
 		return space;
 	}
 
@@ -44,15 +49,21 @@ public class SpaceService {
 			throw new ConflictException("Space name or code already exists");
 		}
 
-		Space spaceCreated = spaceRepository.save(requestData);
+		List<SpaceUser> spaceUsers = new ArrayList<>();
+		if (requestData.getUsers() != null && !requestData.getUsers().isEmpty()) {
+			requestData.getUsers().forEach(u -> {
+				SpaceUser spaceUser = new SpaceUser();
+				spaceUser.setPermission(u.getPermission());
+				spaceUser.setUser(u.getUser());
+				// spaceUser.setSpace(requestData);
+				spaceUsers.add(spaceUserRepository.save(spaceUser));
+			});
+		}
 
-		SpaceUser spaceUser = new SpaceUser();
-		spaceUser.setPermission(Permission.WRITE);
-		spaceUser.setUser(userId);
-		spaceUser.setSpace(spaceCreated);
-		spaceUserRepository.save(spaceUser);
+		requestData.setOwner(userId);
+		requestData.setUsers(spaceUsers);
 
-		return spaceCreated;
+		return spaceRepository.save(requestData);
 	}
 
 	public Space updateSpace(Space requestData, String userId) {
@@ -60,31 +71,33 @@ public class SpaceService {
 				|| spaceRepository.findByName(requestData.getName()).isEmpty()) {
 			throw new NotFoundException("Space not found");
 		}
-		
-		Space space = spaceRepository.findById(requestData.getId()).orElseThrow();
-		SpaceUser spaceUser = spaceUserRepository.findBySpaceAndUser(space, userId).orElseThrow(() -> new PermissionsException("User have not permissions for update"));
-		if (spaceUser.getPermission() == Permission.READ) {
+
+		Space space = spaceRepository.findById(requestData.getId())
+				.orElseThrow(() -> new PermissionsException("User have not permissions for update"));
+		Optional<SpaceUser> spaceUser = space.getUsers().stream().filter(su -> su.getUser().equals(userId)).findFirst();
+		if (!spaceUser.isPresent() || spaceUser.get().getPermission() == Permission.READ) {
 			throw new PermissionsException("User have not permissions for update");
 		}
-		
+
 		space.setName(requestData.getName());
 		space.setName(requestData.getDescription());
 		space.setModificationDate(Instant.now());
-		
+
 		return spaceRepository.save(space);
 	}
-	
+
 	public void deleteSpace(String spaceId, String userId) {
 		if (spaceRepository.findById(spaceId).isEmpty()) {
 			throw new NotFoundException("Space not found");
 		}
-		
-		Space space = spaceRepository.findById(spaceId).get();
-		SpaceUser spaceUser = spaceUserRepository.findBySpaceAndUser(space, userId).orElseThrow(() -> new PermissionsException("User have not permissions for update"));
-		if (spaceUser.getPermission() == Permission.READ) {
+
+		Space space = spaceRepository.findById(spaceId)
+				.orElseThrow(() -> new PermissionsException("User have not permissions for update"));
+		Optional<SpaceUser> spaceUser = space.getUsers().stream().filter(su -> su.getUser().equals(userId)).findFirst();
+		if (!spaceUser.isPresent() || spaceUser.get().getPermission() == Permission.READ) {
 			throw new PermissionsException("User have not permissions for update");
 		}
-		
+
 		spaceRepository.delete(space);
 	}
 }

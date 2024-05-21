@@ -1,6 +1,7 @@
 package com.virasoftware.docservice.mappers;
 
 import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
 
 import com.virasoftware.docservice.domains.dtos.PageDto;
 import com.virasoftware.docservice.domains.entities.Page;
@@ -8,7 +9,9 @@ import com.virasoftware.docservice.domains.entities.Page;
 @Mapper(componentModel = "spring")
 public interface PageMapper {
 
-	PageDto toDto (Page entity);
-	
+	@Mapping(target = "space.users", ignore = true)
+	PageDto toDto(Page entity);
+
+	@Mapping(target = "space.users", ignore = true)
 	Page toEntity(PageDto dto);
 }

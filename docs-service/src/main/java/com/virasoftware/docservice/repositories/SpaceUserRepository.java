@@ -11,7 +11,7 @@ import com.virasoftware.docservice.domains.entities.SpaceUser;
 
 @Repository
 public interface SpaceUserRepository extends JpaRepository<SpaceUser, String> {
-	List<SpaceUser> findAllByUser(String userId);
-	List<SpaceUser> findAllBySpace(Space space);
-	Optional<SpaceUser> findBySpaceAndUser(Space space, String userId);
+	// List<SpaceUser> findAllBySpace(Space space);
+
+	// Optional<SpaceUser> findBySpaceAndUser(Space space, String userId);
 }

@@ -32,21 +32,21 @@ public class SpaceUser {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private String id;
-    
+
     @Column(name = "user_id")
     private String user;
-    
-    @ManyToOne
-    @JoinColumn(name = "space_id")
-    private Space space;
-    
+
+    // @ManyToOne
+    // @JoinColumn(name = "space_id")
+    // private Space space;
+
     @Enumerated(EnumType.STRING)
-    private Permission permission; 
-    
+    private Permission permission;
+
     @CreationTimestamp
     @Column(name = "creation_date")
     private Instant creationDate;
-    
+
     @CreationTimestamp
     @Column(name = "modification_date")
     private Instant modificationDate;

@@ -14,7 +14,7 @@ public class SpaceDto {
     private String id;
     private String name;
     private String code;
-    private List<UserDto> users;
+    private List<SpaceUserDto> users;
     private String owner;
     private String description;
     private Instant creationDate;

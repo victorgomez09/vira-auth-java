@@ -38,8 +38,7 @@ public class SpaceController {
 	@Operation(summary = "Get all spaces from user", description = "Get all spaces from user")
 	@GetMapping
 	@ValidateErrors
-	public ResponseEntity<List<SpaceDto>> findAllSpacesByUser(@RequestHeader("X-User-Id") String userId,
-			BindingResult result) {
+	public ResponseEntity<List<SpaceDto>> findAllSpacesByUser(@RequestHeader("X-User-Id") String userId) {
 		return ResponseEntity.ok(service.findAllSpacesByUser(userId).stream().map(mapper::toDto).toList());
 	}
 
