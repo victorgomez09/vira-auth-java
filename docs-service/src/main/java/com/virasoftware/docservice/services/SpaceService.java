@@ -55,7 +55,6 @@ public class SpaceService {
 				SpaceUser spaceUser = new SpaceUser();
 				spaceUser.setPermission(u.getPermission());
 				spaceUser.setUser(u.getUser());
-				// spaceUser.setSpace(requestData);
 				spaceUsers.add(spaceUserRepository.save(spaceUser));
 			});
 		}
