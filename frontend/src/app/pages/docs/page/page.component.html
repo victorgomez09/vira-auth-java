@@ -7,9 +7,13 @@
 
     @if (isEditting) {
     <p-editor [(ngModel)]="page().body" class="h-full" [style]="{height: 'calc(100% -3em)'}" />
-    <p-button label="Save" (onClick)="handlePageSubmit()" />
+    <div class="flex align-items-center gap-2">
+        <p-button label="Save" (onClick)="handlePageSubmit()" />
+        <p-button label="Cancel" (onClick)="isEditting = false" severity="secondary" />
+    </div>
     } @else {
-    <div class="w-full h-full" [innerHTML]="page().body | sanitizeHtml" (contextmenu)="onContextMenu($event)"></div>
+    <div class="w-full h-full hover:bg-surface-hover" [innerHTML]="page().body | sanitizeHtml"
+        (contextmenu)="onContextMenu($event)"></div>
     }
 
     <p-contextMenu #cm [model]="items" />

@@ -83,6 +83,7 @@ export class DocsComponent implements OnInit {
           this.service.getPagesBySpace(params['spaceId']);
 
           this.loading = false;
+
         }
       });
   }

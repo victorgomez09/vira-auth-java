@@ -1,6 +1,6 @@
 import { Component, OnInit, ViewChild, WritableSignal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, ParamMap } from '@angular/router';
 import { ButtonModule } from 'primeng/button';
 import { EditorModule } from 'primeng/editor';
 import { InputTextModule } from 'primeng/inputtext';
@@ -66,7 +66,9 @@ export class PageComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.service.getPageById(this.activatedRoute.snapshot.params['pageId'])
+    this.activatedRoute.paramMap.subscribe(params => {
+      this.service.getPageById(params.get('pageId')!)
+    })
   }
 
   handlePageSubmit() {

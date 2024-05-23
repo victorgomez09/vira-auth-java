@@ -60,24 +60,14 @@ export class DocService {
       })
       .pipe(tap((data) => {
         data.forEach(page => {
-          const treePage: TreeNode = {
-            key: String(page.treePos),
-            label: page.name,
-            data: page.id,
-            leaf: false
-          }
-          if (page.subPages) {
-            page.subPages.forEach(subPage => {
-              treePage.children?.push(
-                parsePageToTreeNode(subPage)
-              )
-            })
-          }
+          const treePage: TreeNode = parsePageToTreeNode(page)
 
           this.pages.update(values => {
             return [...values, treePage];
           });
         })
+
+        console.log('pages', this.pages())
       }))
       .subscribe();
   }
@@ -104,7 +94,16 @@ export class DocService {
           'X-User-Id': `1`,
         },
       })
-      .pipe(tap((data) => this.page.set(data)))
+      .pipe(tap((data) => {
+        this.page.set(data);
+        const index = this.pages().findIndex(item => item.data == data.id);
+        this.pages.update(old => {
+          old[index] = parsePageToTreeNode(data);
+
+          return old;
+        })
+        console.log('pages', this.pages())
+      }))
       .subscribe();
   }
 }
