@@ -7,3 +7,16 @@ export type Space = {
   description: string;
   users: User[];
 };
+
+export type Page = {
+  id: string,
+  name: string,
+  body: string,
+  parent: Page,
+  owner: string,
+  treePos: number,
+  subPages: Page[],
+  creationDate: Date,
+  modificationDate: Date,
+  space: Space
+}

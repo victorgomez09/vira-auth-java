@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -25,6 +26,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
+@CrossOrigin
 @RestController
 @RequestMapping(value = "/api/v1/doc/space")
 @RequiredArgsConstructor
@@ -46,7 +48,7 @@ public class SpaceController {
 	@GetMapping("/{spaceId}")
 	@ValidateErrors
 	public ResponseEntity<SpaceDto> findSpaceById(@RequestHeader("X-User-Id") String userId,
-			@PathVariable("spaceId") String spaceId, BindingResult result) {
+			@PathVariable("spaceId") String spaceId) {
 		return ResponseEntity.ok(mapper.toDto(service.findSpaceById(spaceId, userId)));
 	}
 

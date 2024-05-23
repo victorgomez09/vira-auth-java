@@ -17,6 +17,7 @@ import { HeaderComponent } from '../../../components/header/header.component';
 import { Space } from '../../../models/docs.model';
 import { DocService } from '../../../services/doc.service';
 import { userStore } from '../../../shared/stores/user.store';
+import { RouterModule } from '@angular/router';
 
 interface ISpaceForm {
   name: FormControl<string | null>;
@@ -36,6 +37,7 @@ interface ISpaceForm {
     CardModule,
     InputTextareaModule,
     ReactiveFormsModule,
+    RouterModule,
     HeaderComponent,
   ],
   templateUrl: './home.component.html',
@@ -43,34 +45,39 @@ interface ISpaceForm {
 })
 export class HomeComponent implements OnInit {
   public loading: boolean;
+  public visible: boolean;
+  public spaceForm: FormGroup;
   public user;
   public spaces: WritableSignal<Space[]>;
 
   constructor(
+    private fb: FormBuilder,
     private service: DocService,
   ) {
+    this.spaceForm = this.fb.group<ISpaceForm>({
+      name: this.fb.control('', Validators.required),
+      description: this.fb.control(''),
+      code: this.fb.control('', [
+        Validators.required,
+        Validators.minLength(3),
+        Validators.maxLength(3),
+      ]),
+    });
+
     this.loading = false;
+    this.visible = false;
     this.user = userStore;
     this.spaces = this.service.spaces;
   }
 
   ngOnInit(): void {
     this.service.getAllSpacesFromUser();
-    // this.spaces.set([
-    //   {
-    //     id: 1,
-    //     name: 'Space 1',
-    //     description: 'First space',
-    //     code: 'SP1',
-    //     users: [],
-    //   },
-    //   {
-    //     id: 2,
-    //     name: 'Space 2',
-    //     description: 'Second space',
-    //     code: 'SP2',
-    //     users: [],
-    //   },
-    // ]);
   }
+
+  showDialog() {
+    this.visible = true;
+  }
+
+  handleLoginSubmit() { }
+
 }

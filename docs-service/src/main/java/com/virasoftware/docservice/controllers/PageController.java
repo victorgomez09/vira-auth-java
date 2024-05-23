@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -27,6 +28,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
+@CrossOrigin
 @RestController
 @RequestMapping(value = "/api/v1/doc/page")
 @RequiredArgsConstructor
@@ -41,7 +43,7 @@ public class PageController {
     @GetMapping
     @ValidateErrors
     public ResponseEntity<List<PageDto>> findAllPagesBySpace(@RequestHeader("X-User-Id") String userId,
-            @RequestParam("spaceId") String spaceId, BindingResult result) {
+            @RequestParam("spaceId") String spaceId) {
         return ResponseEntity.ok(service.findAllPagesBySpace(spaceId,
                 userId).stream().map(mapper::toDto).toList());
     }
@@ -51,7 +53,7 @@ public class PageController {
     @ValidateErrors
     public ResponseEntity<PageDto> findPageById(
             @RequestHeader("X-User-Id") String userId,
-            @PathVariable("pageId") String pageId, BindingResult result) {
+            @PathVariable("pageId") String pageId) {
         return ResponseEntity.ok(mapper.toDto(service.findPageById(pageId, userId)));
     }
 

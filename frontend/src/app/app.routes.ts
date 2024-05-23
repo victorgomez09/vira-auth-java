@@ -1,6 +1,7 @@
 import { Routes } from '@angular/router';
 import { authGuard } from './guards/auth.guard';
 import { DocsComponent } from './components/layouts/docs/docs.component';
+import { AppLayoutComponent } from './components/layouts/app-layout/app-layout.component';
 
 export const routes: Routes = [
   {
@@ -24,7 +25,7 @@ export const routes: Routes = [
   },
   {
     path: 'docs',
-    component: DocsComponent,
+    component: AppLayoutComponent,
     // canActivate: [authGuard],
     children: [
       {
@@ -33,12 +34,18 @@ export const routes: Routes = [
           import('./pages/docs/home/home.component').then((m) => m.HomeComponent),
       },
       {
-        path: 'spaces/:id',
-        loadComponent: () => import('./pages/docs/space/space.component').then(m => m.SpaceComponent)
-      },
-      {
-        path: 'spaces/:spaceId/page/:pageId',
-        loadComponent: () => import('./pages/docs/page/page.component').then(m => m.PageComponent)
+        path: 'spaces',
+        component: DocsComponent,
+        children: [
+          {
+            path: ':spaceId',
+            loadComponent: () => import('./pages/docs/space/space.component').then(m => m.SpaceComponent)
+          },
+          {
+            path: ':spaceId/page/:pageId',
+            loadComponent: () => import('./pages/docs/page/page.component').then(m => m.PageComponent)
+          }
+        ]
       }
     ]
   },

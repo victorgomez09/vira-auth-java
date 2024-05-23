@@ -21,8 +21,8 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class PageService {
 
-    private PageRepository pageRepository;
-    private SpaceRepository spaceRepository;
+    private final PageRepository pageRepository;
+    private final SpaceRepository spaceRepository;
 
     public List<Page> findAllPagesBySpace(String spaceId, String userId) {
         Space space = spaceRepository.findByIdAndUser(spaceId, userId)
@@ -44,17 +44,23 @@ public class PageService {
     }
 
     public Page createPage(Page requestData, String userId) {
-        checkUserPermissions(requestData.getSpace().getId(), userId);
+        Space space = checkUserPermissions(requestData.getSpace().getId(), userId);
 
-        Optional<Page> parentPage = pageRepository.findById(requestData.getParent().getId());
         Page page = new Page();
         page.setName(requestData.getName());
-        page.setName(requestData.getBody());
-        page.setParent(parentPage.isEmpty() ? null : parentPage.get());
+        page.setBody(requestData.getBody());
         page.setOwner(userId);
-        page.setTreePos(parentPage.isEmpty() ? Constants.INITIAL_TREE_POS : parentPage.get().getTreePos() + "10");
+        page.setSpace(space);
         page.setCreationDate(Instant.now());
         page.setModificationDate(Instant.now());
+
+        if (requestData.getParent() != null) {
+            Optional<Page> parentPage = pageRepository.findById(requestData.getParent().getId());
+            page.setParent(parentPage.get());
+            page.setTreePos(parentPage.get().getTreePos() + "10");
+        } else {
+            page.setTreePos(Constants.INITIAL_TREE_POS);
+        }
 
         return pageRepository.save(page);
     }
@@ -65,7 +71,7 @@ public class PageService {
         Page page = pageRepository.findById(requestData.getId())
                 .orElseThrow(() -> new NotFoundException("Page not found"));
         page.setName(requestData.getName());
-        page.setName(requestData.getBody());
+        page.setBody(requestData.getBody());
         page.setCreationDate(Instant.now());
         page.setModificationDate(Instant.now());
 
@@ -83,10 +89,9 @@ public class PageService {
     /**
      * PRIVATE METHODS
      */
-    private void checkUserPermissions(String spaceId, String userId) {
-        if (spaceRepository.findByIdAndUser(spaceId, userId).isEmpty()) {
-            throw new PermissionsException("User have not see this space");
-        }
+    private Space checkUserPermissions(String spaceId, String userId) {
+        return spaceRepository.findByIdAndUser(spaceId, userId)
+                .orElseThrow(() -> new PermissionsException("User have not see this space"));
     }
 
 }
