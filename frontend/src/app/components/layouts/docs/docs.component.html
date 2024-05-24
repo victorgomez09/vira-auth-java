@@ -1,13 +1,15 @@
 <div class="flex flex-column flex-1 w-full h-full">
     <div class="grid m-0 h-full">
-        <div class="col-3 lg:col-2 h-full">
+        <div class="flex flex-column col-3 lg:col-2 h-full">
             <div class="flex align-items-center justify-content-between mb-2">
                 <p class="p-0 m-0"><span class="font-semibold">{{space().code}}</span> - {{space().name}}</p>
 
                 <p-button label="New" [link]="true" />
             </div>
-            <p-tree [value]="pages()" class="w-full" styleClass="p-0" [filter]="true" filterPlaceholder="Search page"
-                emptyMessage="No pages found" [loading]="loading" selectionMode="single" (onNodeSelect)="nodeSelect($event)" />
+            <p-tree [value]="pages()" class="w-full h-full" styleClass="p-0 h-full" filterMode="strict" [filter]="true"
+                filterPlaceholder="Search page" emptyMessage="No pages found" [loading]="loading" selectionMode="single"
+                [(selection)]="selectedPage" (onNodeSelect)="nodeSelect($event)" [contextMenu]="cmTree" />
+            <p-contextMenu #cmTree [model]="items" />
         </div>
         <p-divider styleClass="p-0 m-0" layout="vertical"></p-divider>
         <div class="col-9 lg:col-10">
@@ -15,3 +17,21 @@
         </div>
     </div>
 </div>
+
+<!-- Create new page dialog -->
+<p-dialog header="Add page" [modal]="true" [(visible)]="visible" [style]="{ width: '25rem' }">
+    <span class="p-text-secondary block mb-5">Add new page below {{selectedPage?.label}}</span>
+    <form [formGroup]="pageForm" (ngSubmit)="addNewPage()">
+        <div class="flex align-items-center gap-3 mb-3">
+            <label for="name" class="font-semibold w-6rem">Name</label>
+            <div class="flex flex-column gap-2"></div>
+            <input pInputText id="name" class="flex-auto"
+                [ngClass]="{'ng-invalid ng-dirty': f['name'].touched && f['name'].errors}" autocomplete="off"
+                formControlName="name" />
+        </div>
+        <div class="flex justify-content-end gap-2">
+            <p-button label="Cancel" severity="secondary" (click)="visible = false" />
+            <p-button label="Save" type="submit" [disabled]="pageForm.invalid" />
+        </div>
+    </form>
+</p-dialog>

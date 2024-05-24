@@ -20,3 +20,8 @@ export type Page = {
   modificationDate: Date,
   space: Space
 }
+
+export type CreatePage = {
+  name: string,
+  parent?: string,
+}

@@ -3,7 +3,7 @@ import { Injectable, WritableSignal, inject, signal } from '@angular/core';
 import { TreeNode } from 'primeng/api';
 import { tap } from 'rxjs';
 import { environment } from '../../environments/environment';
-import { Page, Space } from '../models/docs.model';
+import { CreatePage, Page, Space } from '../models/docs.model';
 import { parsePageToTreeNode } from '../utils/docs.util';
 
 @Injectable({
@@ -71,6 +71,28 @@ export class DocService {
         },
       })
       .pipe(tap((data) => this.page.set(data)))
+      .subscribe();
+  }
+
+  createPage(data: CreatePage): void {
+    this._http
+      .post<Page>(`${this._endpoint}/page`, data, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem('access_token')}`,
+          // 'X-User-Id': `${userStore().id}`,
+          'X-User-Id': `1`,
+        },
+      })
+      .pipe(tap((data) => {
+        this.page.set(data);
+        const index = this.pages().findIndex(item => item.data == data.id);
+        this.pages.update(old => {
+          old[index] = parsePageToTreeNode(data);
+
+          return old;
+        })
+        console.log('pages', this.pages())
+      }))
       .subscribe();
   }
 

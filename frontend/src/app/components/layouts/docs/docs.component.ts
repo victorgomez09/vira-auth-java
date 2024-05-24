@@ -1,4 +1,4 @@
-import { Component, EventEmitter, OnInit, Signal, WritableSignal, signal } from '@angular/core';
+import { Component, OnInit, Signal, WritableSignal } from '@angular/core';
 import {
   FormBuilder,
   FormControl,
@@ -7,23 +7,23 @@ import {
   Validators,
 } from '@angular/forms';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
+import { MenuItem, TreeNode } from 'primeng/api';
 import { ButtonModule } from 'primeng/button';
 import { CardModule } from 'primeng/card';
+import { ContextMenuModule } from 'primeng/contextmenu';
 import { DialogModule } from 'primeng/dialog';
 import { DividerModule } from 'primeng/divider';
 import { InputTextModule } from 'primeng/inputtext';
 import { InputTextareaModule } from 'primeng/inputtextarea';
 import { TreeModule, TreeNodeSelectEvent } from 'primeng/tree';
 import { HeaderComponent } from '../../../components/header/header.component';
-import { Page, Space } from '../../../models/docs.model';
+import { CreatePage, Page, Space } from '../../../models/docs.model';
 import { DocService } from '../../../services/doc.service';
 import { userStore } from '../../../shared/stores/user.store';
-import { TreeNode } from 'primeng/api';
+import { CommonModule } from '@angular/common';
 
-interface ISpaceForm {
+interface IPageForm {
   name: FormControl<string | null>;
-  description: FormControl<string | null>;
-  code: FormControl<string | null>;
 }
 
 @Component({
@@ -36,10 +36,12 @@ interface ISpaceForm {
     DialogModule,
     InputTextModule,
     CardModule,
+    ContextMenuModule,
     InputTextareaModule,
     ReactiveFormsModule,
     HeaderComponent,
-    RouterModule
+    RouterModule,
+    CommonModule
   ],
   templateUrl: './docs.component.html',
   styleUrl: './docs.component.css',
@@ -51,6 +53,8 @@ export class DocsComponent implements OnInit {
   public user;
   public pages: WritableSignal<TreeNode[]>;
   public space: Signal<Space>;
+  public items: MenuItem[];
+  public selectedPage: TreeNode | null;
 
   constructor(
     private fb: FormBuilder,
@@ -58,14 +62,8 @@ export class DocsComponent implements OnInit {
     private router: Router,
     private service: DocService,
   ) {
-    this.pageForm = this.fb.group<ISpaceForm>({
+    this.pageForm = this.fb.group<IPageForm>({
       name: this.fb.control('', Validators.required),
-      description: this.fb.control(''),
-      code: this.fb.control('', [
-        Validators.required,
-        Validators.minLength(3),
-        Validators.maxLength(3),
-      ]),
     });
 
     this.loading = true;
@@ -73,6 +71,12 @@ export class DocsComponent implements OnInit {
     this.user = userStore;
     this.pages = this.service.pages;
     this.space = this.service.space;
+
+    this.items = [
+      { label: 'View', icon: 'pi pi-search', command: () => this.router.navigate([`/docs/spaces/${this.space().id}/page/${this.selectedPage!.data}`]) },
+      { label: 'Add', icon: 'pi pi-times', command: () => this.visible = true }
+    ];
+    this.selectedPage = null;
   }
 
   ngOnInit(): void {
@@ -92,18 +96,21 @@ export class DocsComponent implements OnInit {
     this.visible = true;
   }
 
-  handleLoginSubmit() { }
-
-  // handleClickOption(event: ListboxClickEvent) {
-  //   console.log('test', event.option);
-  // }
-
-  onNodeExpand(event: any) {
-    console.log(event)
+  nodeSelect(event: TreeNodeSelectEvent) {
+    this.router.navigate([`/docs/spaces/${this.space().id}/page/${event.node.data}`])
   }
 
-  nodeSelect(event: TreeNodeSelectEvent) {
-    console.log('node selected', event)
-    this.router.navigate([`/docs/spaces/${this.space().id}/page/${event.node.data}`])
+  addNewPage() {
+    console.log('values', this.pageForm.value)
+    const page: CreatePage = {
+      name: this.pageForm.value,
+      parent: this.selectedPage?.data
+    }
+
+    this.service.createPage(page);
+  }
+
+  get f() {
+    return this.pageForm.controls
   }
 }
