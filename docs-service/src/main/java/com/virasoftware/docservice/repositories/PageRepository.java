@@ -11,6 +11,6 @@ import com.virasoftware.docservice.domains.entities.Space;
 @Repository
 public interface PageRepository extends JpaRepository<Page, String> {
 
-	List<Page> findBySpace(Space space);
-	
+	List<Page> findBySpaceOrderByTreePosAsc(Space space);
+
 }

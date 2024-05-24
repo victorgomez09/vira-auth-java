@@ -1,6 +1,7 @@
 package com.virasoftware.docservice.controllers;
 
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
@@ -18,7 +19,10 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.virasoftware.common.aspects.ValidateErrors;
 import com.virasoftware.docservice.domains.dtos.PageDto;
+import com.virasoftware.docservice.domains.dtos.TreeNodeDto;
+import com.virasoftware.docservice.domains.entities.Page;
 import com.virasoftware.docservice.mappers.PageMapper;
+import com.virasoftware.docservice.mappers.TreeNodeMapper;
 import com.virasoftware.docservice.services.PageService;
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -38,14 +42,15 @@ public class PageController {
 
     private final PageService service;
     private final PageMapper mapper;
+    private final TreeNodeMapper treeMapper;
 
     @Operation(summary = "Get all pages from space", description = "Get all pages from space")
     @GetMapping
     @ValidateErrors
-    public ResponseEntity<List<PageDto>> findAllPagesBySpace(@RequestHeader("X-User-Id") String userId,
+    public ResponseEntity<List<TreeNodeDto>> findAllPagesBySpace(@RequestHeader("X-User-Id") String userId,
             @RequestParam("spaceId") String spaceId) {
         return ResponseEntity.ok(service.findAllPagesBySpace(spaceId,
-                userId).stream().map(mapper::toDto).toList());
+                userId).stream().map(treeMapper::toDto).toList());
     }
 
     @Operation(summary = "Get page by id", description = "Get all pages fromspace")

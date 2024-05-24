@@ -1,6 +1,7 @@
 package com.virasoftware.docservice.services;
 
 import java.time.Instant;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -13,6 +14,7 @@ import com.virasoftware.docservice.domains.entities.Space;
 import com.virasoftware.docservice.domains.exceptions.PermissionsException;
 import com.virasoftware.docservice.repositories.PageRepository;
 import com.virasoftware.docservice.repositories.SpaceRepository;
+import com.virasoftware.docservice.trie.TreeNode;
 import com.virasoftware.docservice.utils.Constants;
 
 import lombok.RequiredArgsConstructor;
@@ -24,11 +26,37 @@ public class PageService {
     private final PageRepository pageRepository;
     private final SpaceRepository spaceRepository;
 
-    public List<Page> findAllPagesBySpace(String spaceId, String userId) {
+    public List<TreeNode> findAllPagesBySpace(String spaceId, String userId) {
         Space space = spaceRepository.findByIdAndUser(spaceId, userId)
                 .orElseThrow(() -> new UnauthorizedException("User not have permissions to see this space"));
 
-        return pageRepository.findBySpace(space);
+        List<Page> pageList = pageRepository.findBySpaceOrderByTreePosAsc(space);
+        for (Page page : pageList) {
+            System.out.println("page: " + page.getTreePos());
+        }
+
+        List<TreeNode> tree = new ArrayList<>();
+        for (Page page : pageList) {
+            if (page.getParent() == null) {
+                TreeNode node = new TreeNode(page);
+                tree.add(node);
+            } else {
+                TreeNode node = new TreeNode(page);
+                System.out.println("tree.get(tree.indexOf(node)) != null: " +
+                        (tree.stream()
+                                .filter(ts -> ts.getPage().getTreePos().equals(node.getPage().getParent().getTreePos()))
+                                .findFirst().toString()));
+                if (tree.stream()
+                        .filter(ts -> ts.getPage().getTreePos().equals(node.getPage().getParent().getTreePos()))
+                        .findFirst() != null) {
+                    tree.stream()
+                            .filter(ts -> ts.getPage().getTreePos().equals(node.getPage().getParent().getTreePos()))
+                            .findFirst().get().addChild(node);
+                }
+            }
+        }
+
+        return tree;
     }
 
     public Page findPageById(String pageId, String userId) {

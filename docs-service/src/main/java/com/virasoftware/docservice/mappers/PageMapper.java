@@ -2,6 +2,7 @@ package com.virasoftware.docservice.mappers;
 
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
+import org.mapstruct.Named;
 
 import com.virasoftware.docservice.domains.dtos.PageDto;
 import com.virasoftware.docservice.domains.entities.Page;

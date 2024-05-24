@@ -19,6 +19,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.ToString;
 
 @Entity
 @Table(name = "pages")
@@ -26,35 +27,35 @@ import lombok.Setter;
 @NoArgsConstructor
 @Getter
 @Setter
+@ToString
 public class Page {
-	
+
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private String id;
-    
+
     @Column(unique = true, nullable = false)
     private String name;
-    
+
     private String body;
-    
+
     @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinColumn(name = "parent_id")
     private Page parent;
-    
+
     @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinColumn(name = "space_id")
     private Space space;
-    
+
     private String treePos;
-    
+
     private String owner;
-    
+
     @CreationTimestamp
     @Column(name = "creation_date")
     private Instant creationDate;
-    
+
     @UpdateTimestamp
     @Column(name = "modification_date")
     private Instant modificationDate;
-
 }
