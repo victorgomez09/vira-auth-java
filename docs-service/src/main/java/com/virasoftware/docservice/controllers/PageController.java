@@ -1,7 +1,6 @@
 package com.virasoftware.docservice.controllers;
 
 import java.util.List;
-import java.util.Map;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
@@ -20,7 +19,6 @@ import org.springframework.web.bind.annotation.RestController;
 import com.virasoftware.common.aspects.ValidateErrors;
 import com.virasoftware.docservice.domains.dtos.PageDto;
 import com.virasoftware.docservice.domains.dtos.TreeNodeDto;
-import com.virasoftware.docservice.domains.entities.Page;
 import com.virasoftware.docservice.mappers.PageMapper;
 import com.virasoftware.docservice.mappers.TreeNodeMapper;
 import com.virasoftware.docservice.services.PageService;

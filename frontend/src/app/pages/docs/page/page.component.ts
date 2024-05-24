@@ -72,6 +72,8 @@ export class PageComponent implements OnInit {
   }
 
   handlePageSubmit() {
+    console.log('text editted', this.page().body)
+    this.page.update(old => ({ ...old, body: old.body.replace(/(^([ ]*<p><br><\/p>)*)|((<p><br><\/p>)*[ ]*$)/gi, "").trim() }))
     this.service.updatePage(this.page())
     this.isEditting = false;
     this.isEdittingTittle = false;

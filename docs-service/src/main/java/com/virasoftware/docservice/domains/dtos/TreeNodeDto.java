@@ -1,5 +1,6 @@
 package com.virasoftware.docservice.domains.dtos;
 
+import java.util.LinkedList;
 import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -14,6 +15,10 @@ import lombok.NoArgsConstructor;
 @Data
 @Builder
 public class TreeNodeDto {
-    private PageDto page;
-    private List<TreeNodeDto> childNodes;
+    private String key;
+    private String label;
+    private String data;
+    private TreeNodeDto parent;
+    private boolean leaf;
+    private List<TreeNodeDto> children;
 }

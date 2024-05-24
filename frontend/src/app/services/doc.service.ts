@@ -1,10 +1,9 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable, WritableSignal, inject, signal } from '@angular/core';
-import { Page, Space } from '../models/docs.model';
-import { environment } from '../../environments/environment';
-import { userStore } from '../shared/stores/user.store';
-import { tap } from 'rxjs';
 import { TreeNode } from 'primeng/api';
+import { tap } from 'rxjs';
+import { environment } from '../../environments/environment';
+import { Page, Space } from '../models/docs.model';
 import { parsePageToTreeNode } from '../utils/docs.util';
 
 @Injectable({
@@ -50,7 +49,7 @@ export class DocService {
   /** PAGES **/
   getPagesBySpace(spaceId: string): void {
     this._http
-      .get<Page[]>(`${this._endpoint}/page`, {
+      .get<TreeNode[]>(`${this._endpoint}/page`, {
         params: { 'spaceId': spaceId },
         headers: {
           Authorization: `Bearer ${localStorage.getItem('access_token')}`,
@@ -58,17 +57,7 @@ export class DocService {
           'X-User-Id': `1`,
         },
       })
-      .pipe(tap((data) => {
-        data.forEach(page => {
-          const treePage: TreeNode = parsePageToTreeNode(page)
-
-          this.pages.update(values => {
-            return [...values, treePage];
-          });
-        })
-
-        console.log('pages', this.pages())
-      }))
+      .pipe(tap((data) => this.pages.set(data)))
       .subscribe();
   }
 

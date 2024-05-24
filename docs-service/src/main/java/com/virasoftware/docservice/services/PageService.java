@@ -14,7 +14,7 @@ import com.virasoftware.docservice.domains.entities.Space;
 import com.virasoftware.docservice.domains.exceptions.PermissionsException;
 import com.virasoftware.docservice.repositories.PageRepository;
 import com.virasoftware.docservice.repositories.SpaceRepository;
-import com.virasoftware.docservice.trie.TreeNode;
+import com.virasoftware.docservice.tree.TreeNode;
 import com.virasoftware.docservice.utils.Constants;
 
 import lombok.RequiredArgsConstructor;
@@ -38,19 +38,21 @@ public class PageService {
         List<TreeNode> tree = new ArrayList<>();
         for (Page page : pageList) {
             if (page.getParent() == null) {
-                TreeNode node = new TreeNode(page);
+                TreeNode node = new TreeNode(page.getTreePos(), page.getName(), page.getId());
                 tree.add(node);
             } else {
-                TreeNode node = new TreeNode(page);
+                TreeNode node = new TreeNode(page.getTreePos(), page.getName(), page.getId());
+                node.setParent(new TreeNode(page.getParent().getTreePos(), page.getParent().getName(),
+                        page.getParent().getId()));
                 System.out.println("tree.get(tree.indexOf(node)) != null: " +
                         (tree.stream()
-                                .filter(ts -> ts.getPage().getTreePos().equals(node.getPage().getParent().getTreePos()))
+                                .filter(ts -> ts.getKey().equals(node.getParent().getKey()))
                                 .findFirst().toString()));
                 if (tree.stream()
-                        .filter(ts -> ts.getPage().getTreePos().equals(node.getPage().getParent().getTreePos()))
+                        .filter(ts -> ts.getKey().equals(node.getParent().getKey()))
                         .findFirst() != null) {
                     tree.stream()
-                            .filter(ts -> ts.getPage().getTreePos().equals(node.getPage().getParent().getTreePos()))
+                            .filter(ts -> ts.getKey().equals(node.getParent().getKey()))
                             .findFirst().get().addChild(node);
                 }
             }

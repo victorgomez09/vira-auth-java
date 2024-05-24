@@ -2,19 +2,21 @@
     @if (isEdittingTittle) {
     <input type="text" pInputText [(ngModel)]="page().name" (keydown.enter)="handlePageSubmit()" />
     } @else {
-    <h1 class="font-semibold m-0" (dblclick)="isEdittingTittle = true">{{page().name}}</h1>
+    <h2 class="font-semibold m-0" (dblclick)="isEdittingTittle = true">{{page().name}}</h2>
     }
 
-    @if (isEditting) {
-    <p-editor [(ngModel)]="page().body" class="h-full" [style]="{height: 'calc(100% -3em)'}" />
-    <div class="flex align-items-center gap-2">
-        <p-button label="Save" (onClick)="handlePageSubmit()" />
-        <p-button label="Cancel" (onClick)="isEditting = false" severity="secondary" />
+    <div class="flex flex-column mt-2 h-full">
+        @if (isEditting) {
+        <p-editor [(ngModel)]="page().body" class="h-full" [style]="{height: 'calc(100% -3em)'}" />
+        <div class="flex align-items-center gap-2">
+            <p-button label="Save" (onClick)="handlePageSubmit()" />
+            <p-button label="Cancel" (onClick)="isEditting = false" severity="secondary" />
+        </div>
+        } @else {
+        <div class="border-round w-full h-full html-render" [innerHTML]="page().body | sanitizeHtml"
+            (contextmenu)="onContextMenu($event)" (dblclick)="isEditting = true"></div>
+        }
     </div>
-    } @else {
-    <div class="w-full h-full hover:bg-surface-hover" [innerHTML]="page().body | sanitizeHtml"
-        (contextmenu)="onContextMenu($event)"></div>
-    }
 
     <p-contextMenu #cm [model]="items" />
 </div>

@@ -6,3 +6,12 @@
 ::ng-deep .p-editor-container {
     height: calc(100% - 4.5em);
 }
+
+::ng-deep .html-render p {
+    margin: 0;
+    padding: 0;
+}
+
+::ng-deep .html-render:hover {
+    background-color: var(--surface-100);
+}
